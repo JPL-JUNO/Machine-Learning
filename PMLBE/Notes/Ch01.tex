@@ -1,1 +1,99 @@
 \chapter{Getting Started with Machine Learning and Python\label{Ch01}}
+\section{Digging into the core of machine learning}
+\subsection{Overfitting, underfitting, and the bias-variance trade-off}
+\subsubsection*{Overfitting}
+\textbf{Overfitting} means a model fits the existing observations too well but fails to predict future new observations.
+
+The phenomenon of memorization can cause overfitting. This can occur when we're over extracting too much information from the training sets and making our model just work well with them, which is called low bias in machine learning. In case you need a quick recap of bias, here it is: bias is the difference between the average prediction and the true value. It is computed as follows:
+$$Bias[\hat{y}] = E[\hat{y}-y]$$
+
+At the same time, however, overfitting won't help us to generalize to new data and derive true patterns from it. The model, as a result, will perform poorly on datasets that weren't seen before. We call this situation high variance in machine learning. Again, a quick recap of variance: variance measures the spread of the prediction, which is the variability of the prediction. It can be calculated as follows:
+$$Variance = E[\hat{y}^2]-E[\hat{y}]^2$$
+
+Overfitting occurs when we try to describe the learning rules based on too many parameters relative to the small number of observations, instead of the underlying relationship. Overfitting also takes place when we make the model excessively complex so that it fits every training sample, such as memorizing the answers for all questions, as mentioned previously.
+
+\subsubsection*{Underfitting}
+The opposite scenario is \textbf{underfitting}. When a model is underfit, it doesn't perform well on the training sets and won't do so on the testing sets, which means it fails to capture the underlying trend of the data. We call any of these situations a high bias in machine learning; although its variance is low as the performance in training and test sets is pretty consistent, in a bad way.
+
+\subsubsection*{\href{https://www.inf.ed.ac.uk/teaching/courses/mlsc/Notes/Lecture4/BiasVariance.pdf}{The bias-variance trade-off}}
+Obviously, we want to avoid both overfitting and underfitting. Recall that bias is the error stemming from incorrect assumptions in the learning algorithm; high bias results in underfitting. Variance measures how sensitive the model prediction is to variations in the datasets.
+
+\subsection{Avoiding overfitting with cross-validation}
+\begin{tcolorbox}
+    When the training size is very large, it's often sufficient to split it into training, validation, and testing (three subsets) and conduct a performance check on the latter two. Cross-validation is less preferable in this case since it's computationally costly to train a model for each single round. But if you can afford it, there's no reason not to use cross-validation. When the size isn't so large, cross-validation is definitely a good choice.
+\end{tcolorbox}
+
+There are mainly two cross-validation schemes in use: exhaustive and non-exhaustive. In the exhaustive scheme, we leave out a fixed number of observations in each round as testing (or validation) samples and use the remaining observations as training samples.
+
+A non-exhaustive scheme, on the other hand, as the name implies, doesn't try out all possible partitions. The most widely used type of this scheme is k-fold cross-validation. We first randomly split the original data into k equal-sized folds. In each trial, one of these folds becomes the testing set, and the rest of the data becomes the training set.
+
+\begin{table}
+    \centering
+    \caption{Setup for 5-fold cross-validation}
+    \begin{tabular}{llllll}
+        \hline
+        Round & Fold 1                     & Fold 2                     & Fold 3                     & Fold 4                     & Fold 5                     \\
+        \hline
+        1     & \textcolor{SWJTU}{Testing} & Training                   & Training                   & Training                   & Training                   \\
+        2     & Training                   & \textcolor{SWJTU}{Testing} & Training                   & Training                   & Training                   \\
+        3     & Training                   & Training                   & \textcolor{SWJTU}{Testing} & Training                   & Training                   \\
+        4     & Training                   & Training                   & Training                   & \textcolor{SWJTU}{Testing} & Training                   \\
+        5     & Training                   & Training                   & Training                   & Training                   & \textcolor{SWJTU}{Testing} \\
+        \hline
+    \end{tabular}
+\end{table}
+
+K-fold cross-validation often has a lower variance compared to LOOCV, since we're using a chunk of samples instead of a single one for validation.
+
+We can also randomly split the data into training and testing sets numerous times. This is formally called the holdout method. The problem with this algorithm is that some samples may never end up in the testing set, while some may be selected multiple times in the testing set.
+
+\subsection{Avoiding overfitting with regularization}
+Another way of preventing overfitting is regularization. Recall that the unnecessary complexity of the model is a source of overfitting. Regularization adds extra parameters to the error function we're trying to minimize, in order to penalize complex models.
+
+Besides penalizing complexity, we can also stop a training procedure early as a form of regularization. If we limit the time a model spends learning or we set some internal stopping criteria, it's more likely to produce a simpler model. The model complexity will be controlled in this way and, hence, overfitting becomes less probable. This approach is called early stopping in machine learning.
+
+Last but not least, it's worth noting that regularization should be kept at a moderate level or, to be more precise, fine-tuned to an optimal level. Too small a regularization doesn't make any impact; too large a regularization will result in underfitting, as it moves the model away from the ground truth.
+\subsection{Avoiding overfitting with feature selection and dimensionality reduction}
+
+The number of features corresponds to the dimensionality of the data. Our machine learning approach depends on the number of dimensions versus the number of examples.
+
+Not all of the features are useful and they may only add randomness to our results. It's therefore often important to do good feature selection. \textbf{Feature selection} is the process of picking a subset of significant features for use in better model construction. In practice, not every feature in a dataset carries information useful for discriminating samples; some features are either redundant or irrelevant, and hence can be discarded with little loss.
+
+Another common approach of reducing dimensionality is to transform high-dimensional data into lower-dimensional space. This is known as \textbf{dimensionality reduction} or \textbf{feature projection}.
+
+\section{Data preprocessing and feature engineering}
+One of the methodologies popular in the data mining community is called the \textbf{Cross-Industry Standard Process for Data Mining (CRISP-DM)}
+
+CRISP-DM consists of the following phases, which aren't mutually exclusive and can
+occur in parallel:
+\begin{itemize}
+    \item \textbf{Business understanding}: This phase is often taken care of by specialized domain experts. Usually, we have a businessperson formulate a business problem, such as selling more units of a certain product.
+    \item \textbf{Data understanding}: This is also a phase that may require input from domain experts; however, often a technical specialist needs to get involved more than in the business understanding phase. The domain expert may be proficient with spreadsheet programs but have trouble with complicated data. In this machine learning book, it's usually termed the exploration phase.
+    \item \textbf{Data preparation}: This is also a phase where a domain expert with only Microsoft Excel knowledge may not be able to help you. This is the phase where we create our training and test datasets. In this book, it's usually termed the preprocessing phase.
+    \item \textbf{Modeling}: This is the phase most people associate with machine learning. In this phase, we formulate a model and fit our data.
+    \item \textbf{Evaluation}: In this phase, we evaluate how well the model fits the data to check whether we were able to solve our business problem.
+    \item \textbf{Deployment}: This phase usually involves setting up the system in a production environment (it's considered good practice to have a separate production system). Typically, this is done by a specialized team.
+\end{itemize}
+\subsubsection*{Dealing with missing values}
+The simplest answer is to just ignore them. The second solution is to substitute missing values with a fixed value—this is called \textbf{imputing}. We can impute the arithmetic mean, median, or mode of the valid values of a certain feature. Ideally, we will have some prior knowledge of a variable that is somewhat reliable. For instance, we may know the seasonal averages of temperature for a certain location and be able to impute guesses for missing temperature values given a date.
+\subsubsection*{Power transforms}
+A very common transformation for values that vary by orders of magnitude is to take the logarithm. Another useful power transform is the Box-Cox transformation, named after its creators, two statisticians called George Box and Sir David Roxbee Cox. The Box-Cox transformation attempts to find the best power needed to transform the original data into data that's closer to the normal distribution. In case you are interested, the transform is defined as follows:
+\begin{equation}
+    y_i^{(\lambda)}=\left\{
+    \begin{aligned}
+        \frac{y_i^{\lambda}-1}{\lambda} , \lambda \neq 0 \\
+        \ln(y_i)                        ,\lambda = 0     \\
+    \end{aligned}
+    \right.
+\end{equation}
+\subsection{Combining models}
+\subsubsection*{Voting and averaging}
+It just means the final output will be the majority or average of prediction output values from multiple models. Nonetheless, combining the results of models that are highly correlated to each other doesn't guarantee a spectacular improvement. It is better to somehow diversify the models by using different features or different algorithms. If you find two models are strongly correlated, you may, for example, decide to remove one of them from the ensemble and increase proportionally the weight of the other model.
+\subsubsection*{Bagging(Bootstrap aggregating)}
+Bootstrapping is a statistical procedure that creates multiple datasets from the existing one by sampling data \textbf{with replacement}.
+
+\subsubsection*{Boosting}
+It makes sense to take into account the strength of each individual learner using weights. This general idea is called boosting. In boosting, all models are trained in sequence, instead of in parallel as in bagging. Each model is trained on the same dataset, but each data sample is under a different weight factoring in the previous model's success. The weights are reassigned after a model is trained, which will be used for the next training round. In general, weights for mispredicted samples are increased to stress their prediction difficulty.
+
+\subsubsection*{Stacking}
+Stacking takes the output values of machine learning models and then uses them as input values for another algorithm. You can, of course, feed the output of the higher-level algorithm to another predictor. It's possible to use any arbitrary topology but, for practical reasons, you should try a simple setup first as also dictated by Occam's razor.
