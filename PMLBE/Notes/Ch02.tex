@@ -4,3 +4,12 @@
 \subsection{Multiclass classification}
 \subsection{Multi-label classification}
 A typical approach to solving an n-label classification problem is to transform it into a set of n binary classification problems, where each binary classification problem is handled by an individual binary classifier.
+\section{Evaluating classification performance}
+Sometimes, a model has a higher average f1 score than another model, but a significantly low f1 score for a particular class; sometimes, two models have the same average f1 scores, but one has a higher f1 score for one class and a lower score for another class. In situations such as these, how can we judge which model works better? The \textbf{area under the curve (AUC)} of the \textbf{receiver operating characteristic (ROC)} is a consolidated measurement frequently used in binary classification.
+\section{Tuning models with cross-validation}
+\begin{tcolorbox}
+    In k-fold cross-validation, k is usually set at 3, 5, or 10. If the training size is small, a large k (5 or 10) is recommended to ensure sufficient training samples in each fold. If the training size is large, a small value (such as 3 or 4) works fine since a higher k will lead to an even higher computational cost of training on a large dataset.
+\end{tcolorbox}
+
+We will use the split() method from the StratifiedKFold class of scikit-learn to divide the data into chunks with preserved class distribution.
+

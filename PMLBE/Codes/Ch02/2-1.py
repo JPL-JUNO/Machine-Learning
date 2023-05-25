@@ -80,3 +80,12 @@ label_indices = get_label_indices(Y_train)
 prior = get_prior(label_indices)
 likelihood = get_likelihood(X_train, label_indices, 1)
 posterior = get_posterior(X_test, prior, likelihood)
+
+from sklearn.naive_bayes import BernoulliNB
+clf = BernoulliNB(alpha=1.0, fit_prior=True)
+clf.fit(X_train, Y_train)
+pred_prob = clf.predict_proba(X_test)
+print('[scikit-learn] Predicted probabilities: \n', pred_prob)
+
+pred = clf.predict(X_test)
+print('[scikit-learn] Prediction: ', pred)
