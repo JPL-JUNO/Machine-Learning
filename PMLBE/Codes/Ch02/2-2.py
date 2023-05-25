@@ -141,7 +141,7 @@ roc_auc_score(Y_test, pos_prob)
 
 from sklearn.model_selection import StratifiedKFold
 k = 5
-k_fold = StratifiedKFold(n_splits=k, random_state=42)
+k_fold = StratifiedKFold(n_splits=k)
 smoothing_factor_option = [1, 2, 3, 4, 5, 6]
 fit_prior_option = [True, False]
 auc_record = {}
@@ -164,3 +164,8 @@ for train_indices, test_indices in k_fold.split(X, Y):
 for smoothing, smoothing_record in auc_record.items():
     for fit_prior, auc in smoothing_record.items():
         print('{0} {1} {2:.5f}'.format(smoothing, fit_prior, auc / k))
+
+clf = MultinomialNB(alpha=2.0, fit_prior=False)
+clf.fit(X_train, Y_train)
+pos_prob = clf.predict_proba(X_test)[:, 1]
+print('Auc with the best model: {}'.format(roc_auc_score(Y_test, pos_prob)))

@@ -1,0 +1,10 @@
+\chapter{Recognizing Faces with Support Vector Machine\label{Ch03}}
+\section{Finding the separating boundary with SVM}
+We will continue with another great classifier, SVM, which is effective in cases with high-dimensional spaces or where the number of dimensions is greater than the number of samples.
+
+A \textbf{hyperplane} is a plane of $n - 1$ dimensions that separates the $n$-dimensional feature space of the observations into two spaces.
+
+The optimal hyperplane is picked so that the distance from its nearest points in each space to itself is maximized. And these nearest points are the so-called \textbf{support vectors}.
+
+\subsection{Scenario 2 – determining the optimal hyperplane}
+The nearest point(s) on the positive side can constitute a hyperplane parallel to the decision hyperplane, which we call a positive hyperplane; on the other hand, the nearest point(s) on the negative side can constitute the negative hyperplane. The perpendicular distance between the positive and negative hyperplanes is called the margin, the value of which equates to the sum of the two aforementioned distances. A decision hyperplane is deemed optimal if the margin is maximized.
