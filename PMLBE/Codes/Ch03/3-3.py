@@ -30,6 +30,7 @@ X = np.c_[(.3, -.8),
 Y = [-1] * 8 + [1] * 8
 gamma_option = [1, 2, 4]
 for i, gamma in enumerate(gamma_option, 1):
+    # 1 指明i（索引）开始的值，默认是0
     svm = SVC(kernel='rbf', gamma=gamma)
     svm.fit(X, Y)
     plt.scatter(X[:, 0], X[:, 1], c=['b'] * 8 + ['r'] * 8, zorder=10)
@@ -43,3 +44,4 @@ for i, gamma in enumerate(gamma_option, 1):
                 '--', '-', '--'], levels=[-.5, 0, .5])
     plt.title('gamma = %d' % gamma)
     plt.show()
+    

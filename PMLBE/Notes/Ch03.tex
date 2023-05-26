@@ -44,3 +44,31 @@ Of course, linear separability is the rule of thumb when choosing the right kern
 \begin{tcolorbox}
     Some general prior knowledge that is commonly known includes that text data is often linearly separable, while data generated from the XOR function is not.
 \end{tcolorbox}
+
+Now, let's look at the following three scenarios where the linear kernel is favored
+over RBF.
+
+\begin{description}
+    \item[Scenario 1]Both the number of features and the number of instances are large (more than 104 or 105). Since the dimension of the feature space is high enough, additional features as a result of RBF transformation will not provide a performance improvement, but this will increase the computational expense.
+    \item[Scenario 2]The number of features is noticeably large compared to the number of training samples. Apart from the reasons stated in scenario 1, the RBF kernel is significantly more prone to overfitting.
+    \item[Scenario 3]The number of instances is significantly large compared to the number of features. For a dataset of low dimension, the RBF kernel will, in general, boost the performance by mapping it to a higher-dimensional space. However, due to the training complexity, it usually becomes inefficient on a training set with more than 106 or 107 samples.
+\end{description}
+
+The rules for choosing between linear and RBF kernels can be summarized as \autoref{tbl3-1}:
+\begin{table}
+    \centering
+    \caption{Rules for choosing between linear and RBF kernels}
+    \label{tbl3-1}
+    \begin{tabularx}{\textwidth}{Xll}
+        \hline
+        Scenario                                                        & Linear                & RBF                      \\
+        \hline
+        Prior knowledge                                                 & If linearly separable & If nonlinearly separable \\
+        Visualizable data of 1 to 3 dimension(s)                        & If linearly separable & If nonlinearly separable \\
+        Both the number of features and number of instances are  large. & First choice          &                          \\
+        Features $>>$ Instances                                         & First choice          &                          \\
+        Instances $>>$ Features                                         & First choice          &                          \\
+        Others                                                          &                       & First choice             \\
+        \hline
+    \end{tabularx}
+\end{table}
