@@ -72,3 +72,10 @@ The rules for choosing between linear and RBF kernels can be summarized as \auto
         \hline
     \end{tabularx}
 \end{table}
+\section{Classifying face images with SVM}
+\subsection{Building an SVM-based image classifier}
+There is another SVM classifier, \href{https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html}{LinearSVC}, from scikit-learn. How is it different from SVC? LinearSVC is similar to SVC with linear kernels, but it is implemented based on the liblinear library, which is better optimized than libsvm with the linear kernel, and its penalty function is more flexible.
+
+\begin{tcolorbox}
+    In general, training with the LinearSVC model is faster than SVC. This is because the liblinear library with high scalability is designed for large datasets, while the libsvm library with more than quadratic computation complexity is not able to scale well with more than $10^5$ training instances. But again, the LinearSVC model is limited to only linear kernels.
+\end{tcolorbox}
