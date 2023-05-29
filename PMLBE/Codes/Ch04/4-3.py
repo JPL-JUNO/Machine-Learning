@@ -22,4 +22,3 @@ tree_sk = DecisionTreeClassifier(
 tree_sk.fit(X_train_n, y_train_n)
 export_graphviz(tree_sk, out_file='tree.dot', feature_names=[
                 'X1', 'X2'], impurity=False, filled=True, class_names=['0', '1'])
-# $ dot -Tpng tree.dot -o tree.png
