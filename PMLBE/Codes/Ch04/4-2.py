@@ -13,7 +13,7 @@ from typing import Tuple
 def gini_impurity_np(labels):
     if labels.size == 0:
         return 0
-    counts = np.unique(labels, return_count=True)[1]
+    counts = np.unique(labels, return_counts=True)[1]
     fractions = counts / float(len(labels))
     return 1 - np.sum(fractions ** 2)
 
@@ -21,7 +21,7 @@ def gini_impurity_np(labels):
 def entropy_np(labels):
     if labels.size == 0:
         return 0
-    counts = np.unique(labels, return_count=True)[1]
+    counts = np.unique(labels, return_counts=True)[1]
     fractions = counts / float(len(labels))
     return 1 - np.sum(fractions * np.log2(fractions))
 
@@ -74,3 +74,127 @@ def get_best_split(X: ndarray, y: ndarray, criterion: str = 'gini'):
             if impurity < best_score:
                 best_index, best_value, best_score, children = index, value, impurity, groups
     return {'index': best_index, 'value': best_value, 'children': children}
+
+
+def get_leaf(labels) -> int:
+    # Obtain the leaf as the majority of the labels
+    return np.bincount(labels).argmax()
+
+
+def split(node: dict, max_depth: int, min_size: int, depth, criterion: str):
+    """split children of a node to construct new nodes or assign them terminals
+
+    Args:
+        node (dict): with children info
+        max_depth (int): maximal depth of the tree
+        min_size (int): minimal samples required to further split a child
+        depth (_type_): current depth of the node
+        criterion (str): gini or entropy
+    """
+    left, right = node['children']
+    del (node['children'])
+    if left[1].size == 0:
+        node['right'] = get_leaf(right[1])
+        return
+    if right[1].size == 0:
+        node['left'] = get_leaf(left[1])
+        return
+    # check if the current depth exceeds the maximal depth
+    if depth >= max_depth:
+        node['left'], node['right'] = get_leaf(left[1]), get_leaf(right[1])
+        return
+    # check if the left node child has enough samples
+    if left[1].size <= min_size:
+        node['left'] = get_leaf(left[1])
+    else:
+        # it has enough samples, we further split it
+        result = get_best_split(left[0], left[1], criterion)
+        result_left, result_right = result['children']
+        if result_left[1].size == 0:
+            node['left'] = get_leaf(result_right[1])
+        elif result_right[1].size == 0:
+            node['left'] = get_leaf(result_left[1])
+        else:
+            node['left'] = result
+            split(node['left'], max_depth, min_size, depth + 1, criterion)
+
+    if right[1].size <= min_size:
+        node['right'] = get_leaf(right[1])
+    else:
+        result = get_best_split(right[0], right[1], criterion)
+        result_left, result_right = result['children']
+        if result_left[1].size == 0:
+            node['right'] = get_leaf(result_right[1])
+        elif result_right[1].size == 0:
+            node['right'] = get_leaf(result_left[1])
+        else:
+            node['right'] = result
+            split(node['right'], max_depth, min_size, depth + 1, criterion)
+
+
+def train_tree(X_train, y_train, max_depth: int, min_size: int, criterion: str = 'gini'):
+    """construction of a tree starts here
+
+    Args:
+        X_train (_type_): list of training samples (feature)
+        y_train (_type_): list of training samples (target)
+        max_depth (int): maximal depth of the tree
+        min_size (int): minimal samples required to further split a child
+        criterion (_type_): gini or entropy
+
+    Returns:
+        _type_: _description_
+    """
+    X = np.array(X_train)
+    y = np.array(y_train)
+    root = get_best_split(X, y, criterion)
+    split(root, max_depth, min_size, 1, criterion)
+    return root
+
+
+X_train = [['tech', 'professional'],
+           ['fashion', 'student'],
+           ['fashion', 'professional'],
+           ['sports', 'student'],
+           ['tech', 'student'],
+           ['tech', 'retired'],
+           ['sports', 'professional']]
+y_train = [1, 0, 0, 0, 1, 0, 1]
+tree = train_tree(X_train, y_train, 2, 2)
+
+
+CONDITION = {'numerical': {'yes': '>=', 'no': '<'},
+             'categorical': {'yes': 'is', 'no': 'is not'}}
+
+
+def visualize_tree(node, depth: int = 0):
+    if isinstance(node, dict):
+        if node['value'].dtype.kind in ['i', 'f']:
+            condition = CONDITION['numerical']
+        else:
+            condition = CONDITION['categorical']
+        print('{0}|- X{1} {2} {3}'.format(depth * '  ',
+              node['index'] + 1, condition['no'], node['value']))
+        if 'left' in node:
+            visualize_tree(node['left'], depth + 1)
+        print('{0}|- X{1} {2} {3}'.format(depth * '  ',
+              node['index'] + 1, condition['yes'], node['value']))
+        if 'right' in node:
+            visualize_tree(node['right'], depth + 1)
+    else:
+        print("{0}[{1}]".format(depth * '  ', node))
+
+
+X_train_n = [[6, 7],
+             [2, 4],
+             [7, 2],
+             [3, 6],
+             [4, 7],
+             [5, 2],
+             [1, 6],
+             [2, 0],
+             [6, 3],
+             [4, 1]]
+y_train_n = [0, 0, 0, 0, 0, 1, 1, 1, 1, 1]
+tree = train_tree(X_train_n, y_train_n, 2, 2)
+visualize_tree(tree)
