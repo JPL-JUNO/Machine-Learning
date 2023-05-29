@@ -1,1 +1,14 @@
-\chapter{Predicting Online Ad Click-Through with Logistic Regression}}
+\chapter{Predicting Online Ad Click-Through with Logistic Regression}
+\section{Classifying data with logistic regression}
+\subsection{Jumping from the logistic function to logistic regression}
+Due to the logarithmic function, the cost function
+\begin{equation}
+    J(w)=\frac{1}{m}\sum_{i=1}^{m}-[y^{(i)}\log(\hat{y}(x^{(i)}))+[1-y^{(i)}]\log(1-\hat{y}(x^{(i)}))]
+\end{equation}
+is also called \textbf{logarithmic loss}, or simply \textbf{log loss}.
+
+Minimizing this alternative cost function is actually equivalent to minimizing the MSE-based cost function. The advantages of choosing it over the MSE one include the following:
+\begin{itemize}
+    \item Obviously, being convex, so that the optimal model weights can be found
+    \item A summation of the logarithms of prediction $y^{(i)}$ or $1-y^{(i)}$ simplifies the calculation of its derivative with respect to the weights, which we will talk about later
+\end{itemize}
