@@ -33,3 +33,31 @@ train_data = train_data.repeat().shuffle(5000).batch(batch_size).prefetch(1)
 n_features = int(X_train_enc.shape[1])
 W = tf.Variable(tf.zeros([n_features, 1]))
 b = tf.Variable(tf.zeros([1]))
+
+learning_rate = .0008
+optimizer = tf.optimizers.Adam(learning_rate)
+
+
+def run_optimizer(x, y):
+    with tf.GradientTape() as g:
+        logits = tf.add(tf.matmul(x, W), b)[:, 0]
+        cost = tf.reduce_mean(
+            tf.nn.sigmoid_cross_entropy_with_logits(labels=y, logits=logits))
+    gradients = g.gradient(cost, [W, b])
+    optimizer.apply_gradients(zip(gradients, [W, b]))
+
+
+train_steps = 6_000
+for step, (batch_x, batch_y) in enumerate(train_data.take(train_steps), 1):
+    run_optimizer(batch_x, batch_y)
+    if step % 500 == 0:
+        logits = tf.add(tf.matmul(batch_x, W), b)[:, 0]
+        loss = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
+            labels=batch_y, logits=logits))
+        print('Step: {0}, loss: {1:.4f}'.format(step, loss))
+
+logits = tf.add(tf.matmul(X_test_enc, W), b)[:, 0]
+pred = tf.nn.sigmoid(logits)
+auc_metric = tf.keras.metrics.AUC()
+auc_metric.update_state(Y_test, pred)
+print('AUC on testing set: {0:.3f}'.format(auc_metric.result().numpy()))
