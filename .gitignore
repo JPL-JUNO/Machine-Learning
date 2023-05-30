@@ -3,4 +3,5 @@
 *.gz
 *.out
 *.vscode
-PMLBE/Codes/Ch04/train.csv
+*.pyc
+PMLBE/Codes/data/train.csv
