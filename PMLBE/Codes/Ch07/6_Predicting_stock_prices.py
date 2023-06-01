@@ -57,16 +57,18 @@ grid_search.fit(X_train, y_train)
 rf_best = grid_search.best_estimator_
 predictions_rf = rf_best.predict(X_test)
 
-param_grid = [
-    {'kernel': ['linear'], 'C':[100, 200, 300], 'epsilon':[.00003, .0001]},
-    {'kernel': ['rbf'], 'gamma':[1e-3, 1e-4],
-        'C':[10, 100, 1000], 'epsilon': [.00003, .0001]}
-]
-svr = SVR()
-grid_search = GridSearchCV(svr, param_grid, cv=5, scoring='r2', n_jobs=-1)
-grid_search.fit(X_scaled_train, y_train)
-svr_best = grid_search.best_estimator_
-predictions_svr = svr_best.predict(X_scaled_test)
+param_grid = {
+    "C": [1000, 3000, 10000],
+    "epsilon": [0.00001, 0.00003, 0.0001],
+}
+svr = SVR(kernel='linear', C=500, epsilon=.1)
+svr.fit(X_scaled_train, y_train)
+predictions_svr = svr.predict(X_scaled_test)
+# grid_search = GridSearchCV(svr, param_grid, cv=5,
+#                            scoring='neg_mean_absolute_error', n_jobs=-1)
+# grid_search.fit(X_scaled_train, y_train)
+# svr_best = grid_search.best_estimator_
+# predictions_svr = svr_best.predict(X_scaled_test)
 
 import matplotlib.pyplot as plt
 plt.plot(data_test.index, y_test, c='k', label='Truth')
