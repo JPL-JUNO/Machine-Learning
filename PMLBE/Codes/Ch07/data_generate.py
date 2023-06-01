@@ -109,7 +109,8 @@ def generate_features(df):
     return df_new
 
 
-data_raw = pd.read_csv('../data/19880101_20191231.csv', index_col='Date')
-change_str_to_float(data_raw)
-data = generate_features(data_raw)
-print(data.round(decimals=3).head(5))
+if __name__ == '__main__':
+    data_raw = pd.read_csv('../data/19880101_20191231.csv', index_col='Date')
+    change_str_to_float(data_raw)
+    data = generate_features(data_raw)
+    print(data.round(decimals=3).head(5))

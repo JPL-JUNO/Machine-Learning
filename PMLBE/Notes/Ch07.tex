@@ -2,3 +2,18 @@
 \section{Estimating with linear regression}
 \subsection{How does linear regression work?}
 A linear regression model, or specifically its weight vector, w, is learned from the training data, with the goal of minimizing the estimation error defined as the \textbf{mean squared error (MSE)}, which measures the average of squares of difference between the truth and prediction.
+
+\section{Estimating with support vector regression}
+In SVR, our goal is to find a decision hyperplane (defined by a slope vector $w$ and intercept $b$) so that two hyperplanes $wx+b=-\epsilon$ (negative hyperplane) and $wx+b=\epsilon$ (positive hyperplane) can cover most training data. In other words, most of the data points are bounded in the $\epsilon$ bands of the optimal hyperplane. And at the same time, the optimal hyperplane is as flat as possible, which means $w$ is as small as possible, as shown in \autoref{fig7-11}
+
+\figures{fig7-11}{Finding the decision hyperplane in SVR}
+This translates into deriving the optimal w and b by solving the following
+optimization problem:
+\begin{itemize}
+    \item Minimizing $||w||$
+    \item Subject to $|y^{(i)} - (wx^{(i)} + b)| \leq \epsilon$, given a training set of $(x^{(1)}, y^{(1)}), (x^{(2)}, y^{(2)}),\dots(x^{(i)}, y^{(i)})\dots, (x^{(m)}, y^{(m)})$
+\end{itemize}
+
+\section{Predicting stock prices with the three regression algorithms}
+You should realize that SGD-based algorithms are sensitive to data with features at very different scales.
+

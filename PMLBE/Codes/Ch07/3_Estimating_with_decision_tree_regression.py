@@ -102,3 +102,23 @@ X_train = np.array([['semi', 3],
                     ['semi', 4]], dtype=object)
 y_train = np.array([600, 700, 800, 400, 700])
 tree = train_tree(X_train, y_train, 2, 2)
+import sys
+sys.path.append('../functions')
+from visualize import visualize_tree
+visualize_tree(tree, 1)
+
+
+# Implementing a regression forest
+from sklearn.datasets import load_diabetes
+from sklearn.ensemble import RandomForestRegressor
+diabetes = load_diabetes()
+num_test = 10
+X_train = diabetes.data[:-num_test, :]
+y_train = diabetes.target[:-num_test]
+X_test = diabetes.data[-num_test:,]
+y_test = diabetes.target[-num_test:]
+regressor = RandomForestRegressor(
+    n_estimators=100, max_depth=10, min_samples_split=3)
+
+regressor.fit(X_train, y_train)
+predictions = regressor.predict(X_test)
