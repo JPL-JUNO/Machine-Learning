@@ -7,6 +7,9 @@
 
 import numpy as np
 from numpy import ndarray
+import sys
+sys.path.append('../utils')
+from visualize import plot_decision_regions
 
 
 class Perceptron:
@@ -53,3 +56,39 @@ class Perceptron:
             int: class label
         """
         return np.where(self.net_input(X) >= 0.0, 1, 0)
+
+if __name__ == '__main__':
+    import os
+    import pandas as pd
+    url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
+
+    # df = pd.read_csv(url, header=None, encoding='utf-8')
+    df = pd.read_csv('../data/iris.data', header=None, encoding='utf-8')
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    y = df.iloc[0:100, 4].values
+    y = np.where(y == 'Iris-setosa', 0, 1)
+
+    X = df.iloc[0:100, [0,2]].values
+    plt.scatter(X[:50, 0], X[:50, 1], color='red', marker='o', label='Setosa')
+    plt.scatter(X[50:100, 0], X[50:100, 1], color='blue', marker='s', label='Versicolor')
+    plt.xlabel('Sepal length [cm]')
+    plt.ylabel('Petal length [cm]')
+    plt.legend()
+    plt.xlabel('Epochs')
+    plt.ylabel('Number of updates')
+    plt.show()
+    
+    ppn = Perceptron(eta=.1, n_iter=10)
+    ppn.fit(X, y)
+    fig = plt.figure()
+    plt.plot(range(1, len(ppn.errors_)+1), ppn.errors_, marker='o')
+    
+    fig = plt.figure()
+    plot_decision_regions(X, y, ppn)
+    plt.xlabel('Sepal length [cm]')
+    plt.ylabel('Petal length [cm]')
+    plt.legend(loc='upper left')
+    plt.show()

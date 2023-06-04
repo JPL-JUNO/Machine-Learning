@@ -1,0 +1,26 @@
+\chapter{A Tour of Machine Learning Classifiers Using Scikit-Learn\label{Ch03}}
+\section{Modeling class probabilities via logistic regression}
+\subsection{Logistic regression and conditional probabilities}
+
+Under the logistic model, we assume that there is a linear relationship between the weighted inputs and the log-odds:
+\begin{equation}
+    logit(p)=w_1x_1+w_2x_2+\cdots+w_mx_m+b=\sum_{i=j}w_jx_j=\textbf{w}^T\textbf{x}+b
+\end{equation}
+
+\figures{fig3-3}{Logistic regression compared to Adaline}
+\subsection{Learning the model weights via the logistic loss function}
+To explain how we can derive the loss function for logistic regression, let’s first define the likelihood, $\mathcal{L}$, that we want to maximize when we build a logistic regression model, assuming that the individual examples in our dataset are independent of one another. The formula is as follows:
+\begin{equation}
+    \begin{aligned}
+        \mathcal{L}(\textbf{w}, b|\textbf{x}) & =p(y|\textbf{x};\textbf{w},b)=\prod_{i=1}^{m}p\left(y^{(i)}|\textbf{x}^{(i)};\textbf{w},b\right) \\
+                                              & =\prod_{i=1}^{m}\left(\sigma(z^{(i)})\right)^{y^{(i)}}\left(1-\sigma(z^{(i)})\right)^{1-y^{(i)}}
+    \end{aligned}
+\end{equation}
+
+In practice, it is easier to maximize the (natural) log of this equation, which is called the \textbf{log-likelihood} function:
+\begin{equation}
+    \begin{aligned}
+        l(\textbf{w}, b|\textbf{x}) & =\log \mathcal{L}(\textbf{w}, b|\textbf{x})                                             \\
+                                    & =\sum_{i=1}\left[y^{(i)}\log(\sigma(z^{(i)}))+(1-y^{(i)})\log(1-\sigma(z^{(i)}))\right]
+    \end{aligned}
+\end{equation}
