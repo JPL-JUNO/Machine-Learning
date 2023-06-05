@@ -74,3 +74,7 @@ In practice, we just need to replace the dot product $\textbf{x}^{(i)T}\textbf{x
 $$k(\textbf{x}^{(i)}\textbf{x}^{(j)})=\phi(\textbf{x}^{(i)})^T\phi(\textbf{x}^{(j)})$$
 
 Roughly speaking, the term “kernel” can be interpreted as a similarity function between a pair of examples. The minus sign inverts the distance measure into a similarity score, and, due to the exponential term, the resulting similarity score will fall into a range between 1 (for exactly similar examples) and 0 (for very dissimilar examples).
+
+The $\gamma$ parameter can be understood as a cut-off parameter for the Gaussian sphere. If we increase the value for $\gamma$, we increase the influence or reach of the training examples, which leads to a tighter and bumpier decision boundary.
+
+\section{Decision tree learning}
