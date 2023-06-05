@@ -28,12 +28,6 @@ In practice, it is easier to maximize the (natural) log of this equation, which 
 \subsection{Tackling overfitting via regularization}
 Overfitting is a common problem in machine learning, where a model performs well on training data but does not generalize well to unseen data (test data). If a model suffers from overfitting, we also say that the model has a high variance, which can be caused by having too many parameters, leading to a model that is too complex given the underlying data. Similarly, our model can also suffer from underfitting (high bias), which means that our model is not complex enough to capture the pattern in the training data well and therefore also suffers from low performance on unseen data.
 
-\begin{tcolorbox}[title=The bias-variance tradeoff]
-    Often, researchers use the terms “bias” and “variance” or “bias-variance tradeoff” to describe the performance of a model—that is, you may stumble upon talks, books, or articles where speople say that a model has a “high variance” or “high bias.” So, what does that mean? In general, we might say that “high variance” is proportional to overfitting and “high bias” is proportional to underfitting.
-
-    In the context of machine learning models, variance measures the consistency (or variability) of the model prediction for classifying a particular example if we retrain the model multiple times, for example, on different subsets of the training dataset. We can say that the model is sensitive to the randomness in the training data. In contrast, bias measures how far off the predictions are from the correct values in general if we rebuild the model multiple times on different training datasets; bias is the measure of the systematic error that is not due to randomness.
-\end{tcolorbox}
-
 One way of finding a good bias-variance tradeoff is to tune the complexity of the model via regularization. Regularization is a very useful method for handling collinearity (high correlation among features), filtering out noise from data, and eventually preventing overfitting.
 
 \begin{tcolorbox}[title=Regularization and feature normalization]
@@ -45,4 +39,31 @@ The loss function for logistic regression can be regularized by adding a simple 
     L(\textbf{w}, b|\textbf{x})  =\sum_{i=1}\left[y^{(i)}\log(\sigma(z^{(i)}))+(1-y^{(i)})\log(1-\sigma(z^{(i)}))\right]+\frac{\lambda}{2n}||\textbf{w}||^2
 \end{equation}
 
-The parameter, \textsf{C}, that is implemented for the LogisticRegression class in scikit-learn comes from a convention in support vector machines. The term \textsf{C} is inversely proportional to the regularization parameter, $\lambda$ . Consequently, decreasing the value of the inverse regularization parameter, \textsf{C}, means that we are increasing the regularization strength
+The parameter, \textsf{C}, that is implemented for the LogisticRegression class in scikit-learn comes from a convention in support vector machines. The term \textsf{C} is inversely proportional to the regularization parameter, $\lambda$ . Consequently, decreasing the value of the inverse regularization parameter, \textsf{C}, means that we are increasing the regularization strength.
+
+\begin{tcolorbox}[title=The bias-variance tradeoff]
+    Often, researchers use the terms “bias” and “variance” or “bias-variance tradeoff” to describe the performance of a model—that is, you may stumble upon talks, books, or articles where speople say that a model has a “high variance” or “high bias.” So, what does that mean? In general, we might say that “high variance” is proportional to overfitting and “high bias” is proportional to underfitting.
+
+    In the context of machine learning models, variance measures the consistency (or variability) of the model prediction for classifying a particular example if we retrain the model multiple times, for example, on different subsets of the training dataset. We can say that the model is sensitive to the randomness in the training data. In contrast, bias measures how far off the predictions are from the correct values in general if we rebuild the model multiple times on different training datasets; bias is the measure of the systematic error that is not due to randomness.
+\end{tcolorbox}
+\section{Maximum margin classification with support vector machines}
+In SVMs, our optimization objective is to maximize the margin. The margin is defined as the distance between the separating hyperplane (decision boundary) and the training examples that are closest to this hyperplane, which are the so-called support vectors.
+\subsection{Dealing with a nonlinearly separable case using slack variables}
+The motivation for introducing the slack variable was that the linear constraints in the SVM optimization objective need to be relaxed for nonlinearly separable data to allow the convergence of the optimization in the presence of misclassifications, under appropriate loss penalization.
+
+The use of the slack variable, in turn, introduces the variable, which is commonly referred to as \textsf{C} in SVM contexts. We can consider \textsf{C} as a hyperparameter for controlling the penalty for misclassification. Large values of \textsf{C} correspond to large error penalties, whereas we are less strict about misclassification errors if we choose smaller values for \textsf{C}. We can then use the \textsf{C} parameter to control the width of the margin and therefore tune the bias-variance tradeoff, as illustrated in \autoref{fig3-11}:
+
+\figures{fig3-11}{The impact of large and small values of the inverse regularization strength \textsf{C} on classification}
+
+\begin{tcolorbox}[title=Logistic regression versus SVMs]
+
+    In practical classification tasks, linear logistic regression and linear SVMs often yield very similar results. Logistic regression tries to maximize the conditional likelihoods of the training data, which makes it more prone to outliers than SVMs, which mostly care about the points that are closest to the decision boundary (support vectors). On the other hand, logistic regression has the advantage of being a simpler model and can be implemented more easily, and is mathematically easier to explain. Furthermore, \textbf{logistic regression models can be easily updated, which is attractive when working with streaming data}.
+\end{tcolorbox}
+\subsection{Alternative implementations in scikit-learn}
+The advantage of using LIBLINEAR and LIBSVM over, for example, native Python implementations is that they allow the extremely quick training of large amounts of linear classifiers. However, sometimes our datasets are too large to fit into computer memory. Thus, scikit-learn also offers alternative implementations via the SGDClassifier class, which also supports online learning via the \verb|partial_fit| method.
+\section{Solving nonlinear problems using a kernel SVM}
+\subsection{Kernel methods for linearly inseparable data}
+The basic idea behind kernel methods for dealing with such linearly inseparable data is to create nonlinear combinations of the original features to project them onto a higher-dimensional space via a mapping function, $\phi$ , where the data becomes linearly separable. As shown in Figure 3.14, we can transform a two-dimensional dataset into a new three-dimensional feature space, where the classes become separable via the following projection:
+$$\phi(x_1,x_2)=(z_1,z_2,z_3)=(x_1,x_2, x_1^2+x_2^2)$$
+
+\figures{fig3-14}{The process of classifying nonlinear data using kernel methods}

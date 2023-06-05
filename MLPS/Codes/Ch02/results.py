@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 import sys
 sys.path.append('./')
 sys.path.append('../')
-from models import AdalineSGD
-from utils.visualize import plot_decision_regions
-from utils.dataset import get_iris
+from modelsNN import AdalineSGD
+from utilsML.visualize import plot_decision_regions
+from utilsML.dataset import get_iris
 
 X, y = get_iris()
 ada_sgd = AdalineSGD(n_iter=15, eta=.01, random_state=1)

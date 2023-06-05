@@ -3,9 +3,11 @@
 @Author(s): Stephen CUI
 @LastEditor(s): Stephen CUI
 @CreatedTime: 2023-06-04 11:40:54
+@Warnings: 不用使用code作为文件名
 """
 
 import sys
+sys.path.append('./')
 sys.path.append("../")
 from utilsML.visualize import plot_decision_regions
 from sklearn.datasets import load_iris
@@ -93,3 +95,20 @@ plt.xlabel('C')
 plt.legend(loc='upper left')
 plt.xscale('log')
 plt.show()
+
+from sklearn.svm import SVC
+svm = SVC(kernel='linear', C=1.0, random_state=1)
+svm.fit(X_train_std, y_train)
+plot_decision_regions(X_combined_std, y_combined,
+                      classifier=svm, test_idx=range(105, 150))
+plt.xlabel('Petal length [standardized]')
+plt.ylabel('Petal width [standardized]')
+plt.legend(loc='upper left')
+plt.tight_layout()
+plt.show()
+
+
+from sklearn.linear_model import SGDClassifier
+ppn = SGDClassifier(loss='perceptron')
+lr = SGDClassifier(loss='log')
+svm = SGDClassifier(loss='hinge')
