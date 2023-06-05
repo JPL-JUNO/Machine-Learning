@@ -14,6 +14,7 @@ class AdalineSGD:
         self.eta = eta
         self.n_iter = n_iter
         self.shuffle = shuffle
+        self.w_initialized = False
         self.random_state = random_state
 
     def fit(self, X: ndarray, y: ndarray):
