@@ -67,3 +67,10 @@ The basic idea behind kernel methods for dealing with such linearly inseparable 
 $$\phi(x_1,x_2)=(z_1,z_2,z_3)=(x_1,x_2, x_1^2+x_2^2)$$
 
 \figures{fig3-14}{The process of classifying nonlinear data using kernel methods}
+\subsection{Using the kernel trick to find separating hyperplanes in a highdimensional space}
+To solve a nonlinear problem using an SVM, we would transform the training data into a higher-dimensional feature space via a mapping function, $\phi$ , and train a linear SVM model to classify the data in this new feature space. Then, we could use the same mapping function, $\phi$ , to transform new, unseen data to classify it using the linear SVM model.
+
+In practice, we just need to replace the dot product $\textbf{x}^{(i)T}\textbf{x}^{(j)}$ by $\phi(\textbf{x}^{(i)})^T\phi(\textbf{x}^{(j)})$. To save the expensive step of calculating this dot product between two points explicitly, we define a so-called kernel function:
+$$k(\textbf{x}^{(i)}\textbf{x}^{(j)})=\phi(\textbf{x}^{(i)})^T\phi(\textbf{x}^{(j)})$$
+
+Roughly speaking, the term “kernel” can be interpreted as a similarity function between a pair of examples. The minus sign inverts the distance measure into a similarity score, and, due to the exponential term, the resulting similarity score will fall into a range between 1 (for exactly similar examples) and 0 (for very dissimilar examples).

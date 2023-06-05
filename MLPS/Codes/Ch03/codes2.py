@@ -7,6 +7,7 @@
 import sys
 sys.path.append('./')
 sys.path.append('../')
+from utilsML.visualize import plot_decision_regions
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -25,5 +26,13 @@ plt.ylim([-3, 3])
 plt.xlabel('Feature 1')
 plt.ylabel('Feature 2')
 plt.legend(loc='best')
+plt.tight_layout()
+plt.show()
+
+from sklearn.svm import SVC
+svm = SVC(kernel='rbf', random_state=1, gamma=.1, C=10)
+svm.fit(X_xor, y_xor)
+plot_decision_regions(X_xor, y_xor, classifier=svm)
+plt.legend(loc='upper left')
 plt.tight_layout()
 plt.show()
