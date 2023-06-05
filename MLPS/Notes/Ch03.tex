@@ -24,3 +24,25 @@ In practice, it is easier to maximize the (natural) log of this equation, which 
                                     & =\sum_{i=1}\left[y^{(i)}\log(\sigma(z^{(i)}))+(1-y^{(i)})\log(1-\sigma(z^{(i)}))\right]
     \end{aligned}
 \end{equation}
+
+\subsection{Tackling overfitting via regularization}
+Overfitting is a common problem in machine learning, where a model performs well on training data but does not generalize well to unseen data (test data). If a model suffers from overfitting, we also say that the model has a high variance, which can be caused by having too many parameters, leading to a model that is too complex given the underlying data. Similarly, our model can also suffer from underfitting (high bias), which means that our model is not complex enough to capture the pattern in the training data well and therefore also suffers from low performance on unseen data.
+
+\begin{tcolorbox}[title=The bias-variance tradeoff]
+    Often, researchers use the terms “bias” and “variance” or “bias-variance tradeoff” to describe the performance of a model—that is, you may stumble upon talks, books, or articles where speople say that a model has a “high variance” or “high bias.” So, what does that mean? In general, we might say that “high variance” is proportional to overfitting and “high bias” is proportional to underfitting.
+
+    In the context of machine learning models, variance measures the consistency (or variability) of the model prediction for classifying a particular example if we retrain the model multiple times, for example, on different subsets of the training dataset. We can say that the model is sensitive to the randomness in the training data. In contrast, bias measures how far off the predictions are from the correct values in general if we rebuild the model multiple times on different training datasets; bias is the measure of the systematic error that is not due to randomness.
+\end{tcolorbox}
+
+One way of finding a good bias-variance tradeoff is to tune the complexity of the model via regularization. Regularization is a very useful method for handling collinearity (high correlation among features), filtering out noise from data, and eventually preventing overfitting.
+
+\begin{tcolorbox}[title=Regularization and feature normalization]
+    Regularization is another reason why feature scaling such as standardization is important. For regularization to work properly, we need to ensure that all our features are on comparable scales.
+\end{tcolorbox}
+
+The loss function for logistic regression can be regularized by adding a simple regularization term, which will shrink the weights during model training:
+\begin{equation}
+    L(\textbf{w}, b|\textbf{x})  =\sum_{i=1}\left[y^{(i)}\log(\sigma(z^{(i)}))+(1-y^{(i)})\log(1-\sigma(z^{(i)}))\right]+\frac{\lambda}{2n}||\textbf{w}||^2
+\end{equation}
+
+The parameter, \textsf{C}, that is implemented for the LogisticRegression class in scikit-learn comes from a convention in support vector machines. The term \textsf{C} is inversely proportional to the regularization parameter, $\lambda$ . Consequently, decreasing the value of the inverse regularization parameter, \textsf{C}, means that we are increasing the regularization strength

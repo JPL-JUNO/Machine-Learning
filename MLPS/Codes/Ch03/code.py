@@ -7,7 +7,7 @@
 
 import sys
 sys.path.append("../")
-from utils.visualize import plot_decision_regions
+from utilsML.visualize import plot_decision_regions
 from sklearn.datasets import load_iris
 import numpy as np
 
