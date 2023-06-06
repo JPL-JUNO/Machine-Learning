@@ -1,4 +1,17 @@
 \chapter{Building Good Training Datasets – Data Preprocessing}
 \section{Dealing with missing data}
 \subsection{Imputing missing values}
-One of the most common interpolation techniques is \textbf{mean imputation}, where we simply replace the missing value with the mean value of the entire feature column. A convenient way to achieve this is by using the SimpleImputer class from scikit-learn
+One of the most common interpolation techniques is \textbf{mean imputation}, where we simply replace the missing value with the mean value of the entire feature column. A convenient way to achieve this is by using the SimpleImputer class from scikit-learn.
+\subsection{Understanding the scikit-learn estimator API}
+The SimpleImputer class is part of the so-called \textbf{transformer} API in scikit-learn, which is used for implementing Python classes related to data transformation. The two essential methods of those estimators are fit and transform. The fit method is used to learn the parameters from the training data, and the transform method uses those parameters to transform the data. Any data array that is to be transformed needs to have the same number of features as the data array that was used to fit the model.
+
+\figures{fig4-2}{Using the scikit-learn API for data transformation}
+
+The \textbf{classifiers} that we used belong to the so-called estimators in scikit-learn, with an API that is conceptually very similar to the scikit-learn transformer API. Estimators have a predict method but can also have a transform method.
+
+\figures{fig4-3}{Using the scikit-learn API for predictive models such as classifiers}
+\section{Handling categorical data}
+When we are talking about categorical data, we have to further distinguish between ordinal and nominal features. Ordinal features can be understood as categorical values that can be sorted or ordered. For example, t-shirt size would be an ordinal feature, because we can define an order: $XL > L > M$. In contrast, nominal features don’t imply any order.
+\subsection{Mapping ordinal features}
+To make sure that the learning algorithm interprets the ordinal features correctly, we need to convert the categorical string values into integers. Unfortunately, there is no convenient function that can automatically derive the correct order of the labels of our size feature, so we have to define the mapping manually.
+\subsubsection*{Optional: encoding ordinal features}
