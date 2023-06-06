@@ -9,7 +9,7 @@ Under the logistic model, we assume that there is a linear relationship between 
 
 \figures{fig3-3}{Logistic regression compared to Adaline}
 \subsection{Learning the model weights via the logistic loss function}
-To explain how we can derive the loss function for logistic regression, let’s first define the likelihood, $\mathcal{L}$, that we want to maximize when we build a logistic regression model, assuming that the individual examples in our dataset are independent of one another. The formula is as follows:
+To explain how we can derive the loss function for logistic regression, let's first define the likelihood, $\mathcal{L}$, that we want to maximize when we build a logistic regression model, assuming that the individual examples in our dataset are independent of one another. The formula is as follows:
 \begin{equation}
     \begin{aligned}
         \mathcal{L}(\textbf{w}, b|\textbf{x}) & =p(y|\textbf{x};\textbf{w},b)=\prod_{i=1}^{m}p\left(y^{(i)}|\textbf{x}^{(i)};\textbf{w},b\right) \\
@@ -78,3 +78,67 @@ Roughly speaking, the term “kernel” can be interpreted as a similarity funct
 The $\gamma$ parameter can be understood as a cut-off parameter for the Gaussian sphere. If we increase the value for $\gamma$, we increase the influence or reach of the training examples, which leads to a tighter and bumpier decision boundary.
 
 \section{Decision tree learning}
+Using the decision algorithm, we start at the tree root and split the data on the feature that results in the largest \textbf{information gain (IG)}.
+\subsection{Maximizing IG – getting the most bang for your buck}
+To split the nodes at the most informative features, we need to define an objective function to optimize via the tree learning algorithm. Here, our objective function is to maximize the IG at each split, which we define as follows:
+\begin{equation}
+    IG(D_p,f)=I(D_p)-\sum_{j=1}^{m}\frac{N_j}{N_p}I(D_j)
+\end{equation}
+Here, $f$ is the feature to perform the split; $D_p$ and $D_j$ are the dataset of the parent and $j$th child node; $I$ is our \textbf{impurity} measure; $N_p$ is the total number of training examples at the parent node; and $N_j$ is the number of examples in the $j$th child node. As we can see, the information gain is simply the difference between the impurity of the parent node and the sum of the child node impurities—the lower the impurities of the child nodes, the larger the information gain.
+
+The three impurity measures or splitting criteria that are commonly used in binary decision trees are \textbf{Gini impurity} ($I_G$), \textbf{entropy} ($I_H$), and the \textbf{classification error} ($I_E$). Let's start with the definition of entropy for all non-empty classes ($p(i|t)\neq 0$):
+\begin{equation}
+    I_H(t)=-\sum_{i=1}^{c}p(i|t)\log_2p(i|t)
+\end{equation}
+
+The Gini impurity can be understood as a criterion to minimize the probability of misclassification:
+\begin{equation}
+    I_G(t)=\sum_{i=1}^{c}p(i|t)(1-p(i|t))=1-\sum_{i=1}^{c}p(i|t)^2
+\end{equation}
+
+Another impurity measure is the classification error:
+\begin{equation}
+    I_E(t) = 1 - \max{p(i|t)}
+\end{equation}
+
+This is a useful criterion for pruning, but not recommended for growing a decision tree, since it is less sensitive to changes in the class probabilities of the nodes.
+
+\subsection{Building a decision tree}
+Although feature scaling may be desired for visualization purposes, note that feature scaling is not a requirement for decision tree algorithms.
+\subsection{}
+The idea behind a random forest is to average multiple (deep) decision trees that individually suffer from high variance to build a more robust model that has a better generalization performance and is less susceptible to overfitting. The random forest algorithm can be summarized in following:
+
+\begin{algorithm}
+    \Begin{
+        \For{$k\leftarrow 1$ \KwTo $K$}{
+            Draw a random bootstrap sample of size $n$ (randomly choose $n$ examples from the training dataset with replacement);
+
+            Grow a decision tree from the bootstrap sample;
+            \ForEach{node}{
+                Randomly select $d$ features without replacement\;
+                Split the node using the feature that provides the best split according to the objective function, for instance, maximizing the information gain\;
+            }
+        }
+        Aggregate the prediction by each tree to assign the class label by majority vote;
+    }
+    \caption{The random forest algorithm}
+\end{algorithm}
+\section{K-nearest neighbors – a lazy learning algorithm}
+KNN is a typical example of a lazy learner. It is called “lazy” not because of its apparent simplicity, but because it doesn't learn a discriminative function from the training data but memorizes the training dataset instead.
+
+The KNN algorithm itself is fairly straightforward and can be summarized by the following:
+\begin{algorithm}
+    \Begin{
+        Choose the number of $k$ and a distance metric\;
+        Find the $k$-nearest neighbors of the data record that we want to classify\;
+        Assign the class label by majority vote\;
+    }
+    \caption{The KNN algorithm}
+\end{algorithm}
+
+In the case of a tie, the scikit-learn implementation of the KNN algorithm will prefer the neighbors with a closer distance to the data record to be classified. If the neighbors have similar distances, the algorithm will choose the class label that comes first in the training dataset.
+
+
+\begin{tcolorbox}[title=Alternative machine learning implementations with GPU support]
+    If you have a computer equipped with an NVIDIA GPU that is compatible with recent versions of NVIDIA's CUDA library, we recommend considering the \href{https://docs.rapids.ai/api}{RAPIDS} ecosystem. For instance, RAPIDS' \href{https://docs.rapids.ai/api/cuml/stable/}{cuML} library implements many of scikit-learn's machine learning algorithms with GPU support to accelerate the processing speeds. You can find an \href{https://docs.rapids.ai/api/cuml/stable/estimator_intro.html}{introduction} to cuML.
+\end{tcolorbox}

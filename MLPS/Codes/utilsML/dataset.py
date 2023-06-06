@@ -13,10 +13,10 @@ from numpy import ndarray
 def get_iris() -> tuple[ndarray, ndarray]:
     df = pd.read_csv('../data/iris.data', header=None, encoding='utf-8')
 
-    y = df.iloc[0:100, 4].values
+    y = df.iloc[:, 4].values
     y = np.where(y == 'Iris-setosa', 0, 1)
 
-    X = df.iloc[0:100, [0, 2]].values
+    X = df.iloc[:, [0, 2]].values
     return X, y
 
 
