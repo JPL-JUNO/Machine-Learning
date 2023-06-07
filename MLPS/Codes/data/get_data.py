@@ -12,16 +12,23 @@ from sklearn.model_selection import train_test_split
 
 
 class DataLoader:
-    def __init__(self, path: str = './'):
-        self.path = path
+    def __init__(self):
+        self.data = None
+        self.X = None
+        self.y = None
 
-    def get_iris_data(self, filename: str = 'iris', extension='.csv',
-                      train_test_split: bool = True):
-        url = self.path + filename + extension
-        df = pd.read_csv(url, header=None, low_memory=True)
-        X = df.iloc[:, :-1].values
-        y = df[-1].values
+    def get_iris(self):
+        self.data = pd.read_csv('../data/iris.data', header=None)
+        return self.data
 
-        if train_test_split:
-            X_train, X_test, y_train, y_test = train_test_split(
-                X, y, stratify=y)
+    def get_wine(self):
+        self.data = pd.read_csv('wine.data', header=None)
+        return self.data
+
+    def standardize(self):
+        pass
+
+    def get_train_test(self, test_size: float = .2):
+        X_train, X_test, y_train, y_test = train_test_split(
+            self.X, self.y, test_size=test_size)
+        return X_train, X_test, y_train, y_test
