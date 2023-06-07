@@ -11,7 +11,22 @@ The \textbf{classifiers} that we used belong to the so-called estimators in scik
 
 \figures{fig4-3}{Using the scikit-learn API for predictive models such as classifiers}
 \section{Handling categorical data}
-When we are talking about categorical data, we have to further distinguish between ordinal and nominal features. Ordinal features can be understood as categorical values that can be sorted or ordered. For example, t-shirt size would be an ordinal feature, because we can define an order: $XL > L > M$. In contrast, nominal features don’t imply any order.
+When we are talking about categorical data, we have to further distinguish between ordinal and nominal features. Ordinal features can be understood as categorical values that can be sorted or ordered. For example, t-shirt size would be an ordinal feature, because we can define an order: $XL > L > M$. In contrast, nominal features don't imply any order.
 \subsection{Mapping ordinal features}
 To make sure that the learning algorithm interprets the ordinal features correctly, we need to convert the categorical string values into integers. Unfortunately, there is no convenient function that can automatically derive the correct order of the labels of our size feature, so we have to define the mapping manually.
 \subsubsection*{Optional: encoding ordinal features}
+
+\section{Bringing features onto the same scale}
+\textbf{Feature scaling} is a crucial step in our preprocessing pipeline that can easily be forgotten. Decision trees and random forests are two of the very few machine learning algorithms where we don't need to worry about feature scaling.
+
+There are two common approaches to bringing different features onto the same scale: \textbf{normalization} and \textbf{standardization}. Most often, normalization refers to the rescaling of the features to a range of $[0, 1]$, which is a special case of \textbf{min-max scaling}. To normalize our data, we can simply apply the min-max scaling to each feature column, where the new value, $x_{norm}^{(i)}$, of an example, $x^{(i)}$, can be calculated as follows:
+\begin{equation}
+    x_{norm}^{(i)}=\frac{x^{(i)}-x_{min}}{x_{max}-x_{min}}
+\end{equation}
+
+Although normalization via min-max scaling is a commonly used technique that is useful when we need values in a bounded interval, standardization can be more practical for many machine learning algorithms, especially for optimization algorithms such as gradient descent. The reason is that many linear models, such as the logistic regression and SVM, initialize the weights to 0 or small random values close to 0. Using standardization, we center the feature columns at mean 0 with standard deviation 1 so that the feature columns \textbf{have the same parameters as a standard normal distribution} (zero mean and unit variance), which makes it easier to learn the weights. However, we shall emphasize that standardization does not change the shape of the distribution, and it does not transform non-normally distributed data into normally distributed data. In addition to scaling data such that it has zero mean and unit variance, standardization maintains useful information about outliers and makes the algorithm less sensitive to them in contrast to min-max scaling, which scales the data to a limited range of values.
+
+The procedure for standardization can be expressed by the following equation:
+\begin{equation}
+    x_{std}^{(i)}=\frac{x^{(i)}-\mu_x}{\sigma_x}
+\end{equation}

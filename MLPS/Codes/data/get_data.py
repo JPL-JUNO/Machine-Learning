@@ -22,13 +22,16 @@ class DataLoader:
         return self.data
 
     def get_wine(self):
-        self.data = pd.read_csv('wine.data', header=None)
+        self.data = pd.read_csv('../data/wine.data', header=None)
+        self.X = self.data.iloc[:, 1:].values
+        self.y = self.data.iloc[:, 0].values
         return self.data
 
     def standardize(self):
         pass
 
-    def get_train_test(self, test_size: float = .2):
+    def get_train_test(self, test_size: float = .2, random_state: int = 42):
+        assert test_size < 1, '不建议指定数量，需指定测试样本比例'
         X_train, X_test, y_train, y_test = train_test_split(
-            self.X, self.y, test_size=test_size)
+            self.X, self.y, test_size=test_size, random_state=random_state)
         return X_train, X_test, y_train, y_test
