@@ -30,3 +30,17 @@ The procedure for standardization can be expressed by the following equation:
 \begin{equation}
     x_{std}^{(i)}=\frac{x^{(i)}-\mu_x}{\sigma_x}
 \end{equation}
+
+\section{Selecting meaningful features}
+\subsection{Sequential feature selection algorithms}
+\begin{algorithm}
+    \Begin{
+        \Repeat{
+            $k$ equals the number of desired features
+        }{
+            Determine the feature, $\textbf{x}^{-}$, that maximizes the criterion: $\textbf{x}^{-} = argmax J(\textbf{X}_k-\textbf{x})$, where $\textbf{x}^{-}\in \textbf{X}_k$\;
+            Remove the feature, $\textbf{x}^{-}$, from the feature set: $\textbf{X}_{k-1}\leftarrow\textbf{X}_k-\textbf{x}$; $k \leftarrow k – 1$\;
+        }
+    }
+    \caption{Sequential Backward Selection (SBS) algorithm}
+\end{algorithm}

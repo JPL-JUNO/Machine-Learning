@@ -138,6 +138,7 @@ The KNN algorithm itself is fairly straightforward and can be summarized by the 
 
 In the case of a tie, the scikit-learn implementation of the KNN algorithm will prefer the neighbors with a closer distance to the data record to be classified. If the neighbors have similar distances, the algorithm will choose the class label that comes first in the training dataset.
 
+It is important to mention that KNN is very susceptible to overfitting due to the \textbf{curse of dimensionality}. The curse of dimensionality describes the phenomenon where the feature space becomes increasingly sparse for an increasing number of dimensions of a fixed-size training dataset. We can think of even the closest neighbors as being too far away in a high-dimensional space to give a good estimate.
 
 \begin{tcolorbox}[title=Alternative machine learning implementations with GPU support]
     If you have a computer equipped with an NVIDIA GPU that is compatible with recent versions of NVIDIA's CUDA library, we recommend considering the \href{https://docs.rapids.ai/api}{RAPIDS} ecosystem. For instance, RAPIDS' \href{https://docs.rapids.ai/api/cuml/stable/}{cuML} library implements many of scikit-learn's machine learning algorithms with GPU support to accelerate the processing speeds. You can find an \href{https://docs.rapids.ai/api/cuml/stable/estimator_intro.html}{introduction} to cuML.
