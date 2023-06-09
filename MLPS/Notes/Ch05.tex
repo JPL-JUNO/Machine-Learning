@@ -14,6 +14,18 @@ $$\textbf{x}\textbf{W}=\textbf{z}$$
 resulting in the output vector:
 $$\textbf{z}=[z_1,z_2, \cdots, z_k], \textbf{z}\in \mathbb{R}^k$$
 
+\begin{algorithm}
+    \Begin{
+        Standardize the $d$-dimensional dataset\;
+        Construct the covariance matrix\;
+        Decompose the covariance matrix into its eigenvectors and eigenvalues\;
+        Sort the eigenvalues by decreasing order to rank the corresponding eigenvectors;\
+        Select $k$ eigenvectors, which correspond to the $k$ largest eigenvalues, where $k$ is the dimensionality of the new feature subspace ($k\leq d$)\;
+        Construct a projection matrix, \textbf{W}, from the “top” $k$ eigenvectors\;
+        Transform the $d$-dimensional input dataset, X, using the projection matrix, \textbf{W}, to obtain the new $k$-dimensional feature subspace\;
+    }\caption{PCA algorithm for dimensionality reduction}
+\end{algorithm}
+
 \begin{tcolorbox}[title=Eigendecomposition: Decomposing a Matrix into Eigenvectors and Eigenvalues]
 
     Eigendecomposition, the factorization of a square matrix into so-called \textbf{eigenvalues} and \textbf{eigenvectors}, is at the core of the PCA procedure.
@@ -27,3 +39,14 @@ Sometimes, we are interested to know about how much each original feature contri
 
 The factor loadings can be computed by scaling the eigenvectors by the square root of the eigenvalues. The resulting values can then be interpreted as the correlation between the original features and the principal component.
 \section{Supervised data compression via linear discriminant analysis}
+The general concept behind LDA is very similar to PCA, but whereas PCA attempts to find the orthogonal component axes of maximum variance in a dataset, the goal in LDA is to find the feature subspace that optimizes class separability.
+
+\subsection{Principal component analysis versus linear discriminant analysis}
+One assumption in LDA is that the data is normally distributed. Also, we assume that the classes have identical covariance matrices and that the training examples are statistically independent of each other. However, even if one, or more, of those assumptions is (slightly) violated, LDA for dimensionality reduction can still work reasonably well.
+
+\subsection{The inner workings of linear discriminant analysis}
+\begin{algorithm}
+    \Begin{
+
+    }
+\end{algorithm}
