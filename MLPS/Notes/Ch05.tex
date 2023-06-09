@@ -1,0 +1,29 @@
+\chapter{Compressing Data via Dimensionality Reduction\label{Ch05}}
+\section{Unsupervised dimensionality reduction via principal component analysis}
+The difference between feature selection and feature extraction is that while we maintain the original features when we use feature selection algorithms, such as sequential backward selection, we use feature extraction to transform or project the data onto a new feature space.
+
+In the context of dimensionality reduction, feature extraction can be understood as an approach to data compression with the goal of maintaining most of the relevant information. In practice, feature extraction is not only used to improve storage space or the computational efficiency of the learning algorithm but can also improve the predictive performance by reducing the curse of dimensionality—especially if we are working with non-regularized models.
+\subsection{The main steps in principal component analysis}
+In a nutshell, PCA aims to find the directions of maximum variance in high-dimensional data and projects the data onto a new subspace with equal or fewer dimensions than the original one. The orthogonal axes (principal components) of the new subspace can be interpreted as the directions of maximum variance given the constraint that the new feature axes are orthogonal to each other, as illustrated in \autoref{fig5-1}:
+\figures{fig5-1}{Using PCA to find the directions of maximum variance in a dataset}
+
+If we use PCA for dimensionality reduction, we construct a $d\times k$-dimensional transformation matrix, \textbf{W}, that allows us to map a vector of the features of the training example, $\textbf{x}$, onto a new $k$-dimensional feature subspace that has fewer dimensions than the original $d$-dimensional feature space. For instance, the process is as follows. Suppose we have a feature vector, $\textbf{x}$:
+$$\textbf{x}=[x_1,x_2, \cdots, x_d], \textbf{x}\in \mathbb{R}^d$$
+which is then transformed by a transformation matrix, $\textbf{W}\in \mathbb{R}^{d\times k}$ :
+$$\textbf{x}\textbf{W}=\textbf{z}$$
+resulting in the output vector:
+$$\textbf{z}=[z_1,z_2, \cdots, z_k], \textbf{z}\in \mathbb{R}^k$$
+
+\begin{tcolorbox}[title=Eigendecomposition: Decomposing a Matrix into Eigenvectors and Eigenvalues]
+
+    Eigendecomposition, the factorization of a square matrix into so-called \textbf{eigenvalues} and \textbf{eigenvectors}, is at the core of the PCA procedure.
+
+    The covariance matrix is a special case of a square matrix: it’s a symmetric matrix, which means that the matrix is equal to its transpose, $A = A^T$.
+
+    When we decompose such a symmetric matrix, the eigenvalues are real (rather than complex) numbers, and the eigenvectors are orthogonal (perpendicular) to each other. Furthermore, eigenvalues and eigenvectors come in pairs. If we decompose a covariance matrix into its eigenvectors and eigenvalues, the eigenvectors associated with the highest eigenvalue corresponds to the direction of maximum variance in the dataset. Here, this “direction” is a linear transformation of the dataset’s feature columns.
+\end{tcolorbox}
+\subsection{Assessing feature contributions}
+Sometimes, we are interested to know about how much each original feature contributes to a given principal component. These contributions are often called \textbf{loadings}.
+
+The factor loadings can be computed by scaling the eigenvectors by the square root of the eigenvalues. The resulting values can then be interpreted as the correlation between the original features and the principal component.
+\section{Supervised data compression via linear discriminant analysis}
