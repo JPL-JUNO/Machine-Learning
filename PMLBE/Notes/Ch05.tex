@@ -1,0 +1,44 @@
+\chapter{Predicting Online Ad Click-Through with Logistic Regression}
+\section{Classifying data with logistic regression}
+\subsection{Jumping from the logistic function to logistic regression}
+Due to the logarithmic function, the cost function
+\begin{equation}
+    J(w)=\frac{1}{m}\sum_{i=1}^{m}-[y^{(i)}\log(\hat{y}(x^{(i)}))+[1-y^{(i)}]\log(1-\hat{y}(x^{(i)}))]
+\end{equation}
+is also called \textbf{logarithmic loss}, or simply \textbf{log loss}.
+
+Minimizing this alternative cost function is actually equivalent to minimizing the MSE-based cost function. The advantages of choosing it over the MSE one include the following:
+\begin{itemize}
+    \item Obviously, being convex, so that the optimal model weights can be found
+    \item A summation of the logarithms of prediction $y^{(i)}$ or $1-y^{(i)}$ simplifies the calculation of its derivative with respect to the weights, which we will talk about later
+\end{itemize}
+\subsection{Training a logistic regression model using stochastic gradient descent}
+\subsection{Training a logistic regression model with regularization}
+The penalty parameter in the logistic regression SGDClassifier is related to model \textbf{regularization}. There are two basic forms of regularization, \textbf{L1} (also called \textbf{Lasso}) and \textbf{L2} (also called \textbf{ridge}). In either way, the regularization is an additional term on top of the original cost function:
+\begin{equation}
+    J(w)=\frac{1}{m}\sum_{i=1}^{m}-[y^{(i)}\log(\hat{y}(x^{(i)}))+[1-y^{(i)}]\log(1-\hat{y}(x^{(i)}))]+\alpha||w||^{q}
+\end{equation}
+Here, $\alpha$ is the constant that multiplies the regularization term, and $q$ is either 1 or 2 representing L1 or L2 regularization where the following applies:
+\begin{equation}
+    ||w||^{1}=\sum_{j=1}^{n}|w_j|
+\end{equation}
+
+Training a logistic regression model is the process of reducing the cost as a function of weights $w$. If it gets to a point where some weights, such as $w_i$, $w_j$, and $w_k$ are considerably large, \textbf{the whole cost will be determined by these large weights}. In this case, the learned model may just memorize the training set and fail to generalize to unseen data. The regularization term herein is introduced in order to penalize large weights, as the weights now become part of the cost to minimize.
+
+As for choosing between the L1 and L2 form, the rule of thumb is based on whether \textbf{feature selection} is expected.
+
+\begin{tcolorbox}
+    L2 regularization favors relatively small values for all weights, and avoids significantly large and small values for any weight, while L1 regularization allows some weights with a significantly small value and some with a significantly large value. Only with L1 regularization can some weights be compressed to close to or exactly 0, which enables feature selection.
+\end{tcolorbox}
+\section{Training on large datasets with online learning}
+We will explore how to train on a large-scale dataset with \textbf{online learning}.
+
+\figures{fig5-7}{Online versus offline learning}
+\section{Handling multiclass classification}
+Logistic regression for more than two classes is also called \textbf{multinomial logistic regression}, or better known latterly as \textbf{softmax regression}.
+
+The cost function in the multiclass case becomes the following:
+\begin{equation}
+    J(w)=\frac{1}{m}\sum_{i=1}^{m}\left[-\sum_{j=1}^{K}1\{y^{(i)}=j\}\log(\hat{y}_k(x^{(i)}))\right]
+\end{equation}
+Here, function $1\{y^{(i)}=j\}$ is 1 only if $y^{(i)}=j$ is true, otherwise it's 0.

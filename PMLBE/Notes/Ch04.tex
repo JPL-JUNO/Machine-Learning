@@ -1,0 +1,29 @@
+\chapter{Predicting Online Ad Click-Through with Tree-Based Algorithms\label{Ch04}}
+\section{A brief overview of ad click-through prediction}
+The most common measurement of effectiveness is the click-through rate (CTR), which is the ratio of clicks on a specific ad to its total number of views. The higher the CTR in general, the better targeted an ad is, and the more successful an online advertising campaign is.
+\section{Exploring a decision tree from the root to the leaves}
+\subsection{Constructing a decision tree}
+Many algorithms have been developed to efficiently construct an accurate decision tree. Popular ones include the following:
+
+\begin{description}
+    \item[Iterative Dichotomiser 3 (ID3):]This algorithm uses a greedy search in a top-down manner by selecting the best attribute to split the dataset on with each iteration without backtracking.
+    \item[C4.5:]This is an improved version of ID3 that introduces backtracking. It traverses the constructed tree and replaces the branches with leaf nodes if purity is improved this way.
+    \item[Classification and Regression Tree (CART):]This constructs the tree using binary splitting, which we will discuss in more detail shortly.
+    \item[Chi-squared Automatic Interaction Detector (CHAID):]This algorithm is often used in direct marketing. It involves complicated statistical concepts, but basically, it determines the optimal way of merging predictive variables in order to best explain the outcome.
+\end{description}
+
+\subsection{The metrics for measuring a split}
+\subsubsection*{Gini Impurity}
+Gini Impurity, as its name implies, measures the impurity rate of the class distribution of data points, or the class mixture rate. For a dataset with K classes, suppose that data from class $k(1 \leq k \leq K)$ takes up a fraction $f_k(0 \leq f_k \leq 1)$ of the entire dataset; then the Gini Impurity of this dataset is written as follows:
+$$Gini~impurity=1-\sum_{k=1}^Kf_k^2$$
+A lower Gini Impurity indicates a purer dataset.
+
+\subsubsection*{Information Gain}
+Another metric, Information Gain, measures the improvement of purity after splitting or, in other words, the reduction of uncertainty due to a split. Higher Information Gain implies better splitting. We obtain the Information Gain of a split by comparing the entropy before and after the split. Entropy is a probabilistic measure of uncertainty. Given a $K$-class dataset, and $f_k (0 \leq f_k \leq 1)$ denoted as the fraction of data from class $k (1 \leq k \leq K)$, the entropy of the dataset is defined as follows:
+$$Entropy = -\sum_{k=1}^Kf_k*\log_2f_k$$
+Lower entropy implies a purer dataset with less ambiguity.
+
+\section{Ensembling decision trees – random forest}
+The ensemble technique of bagging (which stands for bootstrap aggregating), can effectively overcome overfitting.
+\section{Ensembling decision trees – gradient boosted trees}
+\textbf{Boosting}, which is another ensemble technique, takes an iterative approach instead of combining multiple learners in parallel. In boosted trees, individual trees are no longer trained separately. Specifically, in \textbf{gradient boosted trees (GBT)} (also called \textbf{gradient boosting machines}), individual trees are trained in succession where a tree aims to correct the errors made by the previous tree.

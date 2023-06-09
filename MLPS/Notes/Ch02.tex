@@ -1,0 +1,38 @@
+\chapter{Training Simple Machine Learning Algorithms for Classification\label{Ch02}}
+\section{Implementing a perceptron learning algorithm in Python}
+\subsection{An object-oriented perceptron API}
+If all the weights are initialized to zero, the learning rate parameter, $\eta$, affects only the scale of the weight vector, not the direction. Consider a vector,$v_1 =[1~2~3]$, where the angle between $v_1$ and a vector, $v_2 = 0.5 \times v_1$, would be exactly zero.
+\section{Adaptive linear neurons and the convergence of learning}
+We will take a look at another type of single-layer \textbf{neural network (NN): ADAptive LInear NEuron (Adaline)}. The Adaline algorithm is particularly interesting because it illustrates the key concepts of defining and minimizing continuous loss functions.
+
+The key difference between the Adaline rule (also known as the Widrow-Hoff rule) and Rosenblatt’s perceptron is that the weights are updated based on a linear activation function rather than a unit step function like in the perceptron. In Adaline, this linear activation function, $\sigma(z)$, is simply the identity function of the net input, so that $\sigma(z)=z$ .
+
+\figures{fig2-9}{A comparison between a perceptron and the Adaline algorithm}
+
+As \autoref{fig2-9} indicates, the Adaline algorithm compares the true class labels with the linear activation function’s continuous valued output to compute the model error and update the weights. In contrast, the perceptron compares the true class labels to the predicted class labels.
+
+Although the Adaline learning rule looks identical to the perceptron rule, we should note that $\sigma(z^{(i)})$ with $\sigma(z^{(i)})=\textbf{w}^T\textbf{x}^{(i)}+b$ is a real number and not an integer class label. Furthermore, the weight update is calculated based on all examples in the training dataset (instead of updating the parameters incrementally after each training example), which is why this approach is also referred to as \textbf{batch gradient descent}. To be more explicit and avoid confusion when talking about related concepts later, we will refer to this process as \textbf{full batch gradient descent}.
+
+\subsection{Improving gradient descent through feature scaling}
+Gradient descent is one of the many algorithms that benefit from feature scaling. In this section, we will use a feature scaling method called standardization. This normalization procedure helps gradient descent learning to converge more quickly; however, it does not make the original dataset normally distributed.
+
+One of the reasons why standardization helps with gradient descent learning is that it is easier to find a learning rate that works well for all weights (and the bias). If the features are on vastly different scales, a learning rate that works well for updating one weight might be too large or too small to update the other weight equally well. Overall, using standardized features can stabilize the training such that the optimizer has to go through fewer steps to find a good or optimal solution (the global loss minimum).
+
+\subsection{Large-scale machine learning and stochastic gradient descent}
+A popular alternative to the batch gradient descent algorithm is \textbf{stochastic gradient descent (SGD)}, which is sometimes also called iterative or online gradient descent. Instead of updating the weights based on the sum of the accumulated errors over all training examples, $\textbf{x}^{(i)}$:
+\begin{equation*}
+    \Delta w_j=\frac{2\eta}{n}\sum_{i}\left(y^{(i)}-\sigma(z^{(i)})\right)x_j^{(i)}
+\end{equation*}
+we update the parameters incrementally for each training example, for instance:
+\begin{equation*}
+    \Delta w_j=\eta\left(y^{(i)}-\sigma(z^{(i)})\right)x_j^{(i)},~\Delta b=\eta\left(y^{(i)}-\sigma(z^{(i)})\right)
+\end{equation*}
+
+\begin{tcolorbox}[title=Adjusting the learning rate during training]
+    In SGD implementations, the fixed learning rate, $\eta$ , is often replaced by an adaptive learning
+    rate that decreases over time, for example:
+    \begin{equation*}
+        \frac{c_1}{[number~of~iterations]+c_2}
+    \end{equation*}
+    where $c_1$and $c_2$ are constants. Note that SGD does not reach the global loss minimum but an area very close to it. And using an adaptive learning rate, we can achieve further annealing to the loss minimum.
+\end{tcolorbox}

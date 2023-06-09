@@ -1,0 +1,145 @@
+\chapter{A Tour of Machine Learning Classifiers Using Scikit-Learn\label{Ch03}}
+\section{Modeling class probabilities via logistic regression}
+\subsection{Logistic regression and conditional probabilities}
+
+Under the logistic model, we assume that there is a linear relationship between the weighted inputs and the log-odds:
+\begin{equation}
+    logit(p)=w_1x_1+w_2x_2+\cdots+w_mx_m+b=\sum_{i=j}w_jx_j=\textbf{w}^T\textbf{x}+b
+\end{equation}
+
+\figures{fig3-3}{Logistic regression compared to Adaline}
+\subsection{Learning the model weights via the logistic loss function}
+To explain how we can derive the loss function for logistic regression, let's first define the likelihood, $\mathcal{L}$, that we want to maximize when we build a logistic regression model, assuming that the individual examples in our dataset are independent of one another. The formula is as follows:
+\begin{equation}
+    \begin{aligned}
+        \mathcal{L}(\textbf{w}, b|\textbf{x}) & =p(y|\textbf{x};\textbf{w},b)=\prod_{i=1}^{m}p\left(y^{(i)}|\textbf{x}^{(i)};\textbf{w},b\right) \\
+                                              & =\prod_{i=1}^{m}\left(\sigma(z^{(i)})\right)^{y^{(i)}}\left(1-\sigma(z^{(i)})\right)^{1-y^{(i)}}
+    \end{aligned}
+\end{equation}
+
+In practice, it is easier to maximize the (natural) log of this equation, which is called the \textbf{log-likelihood} function:
+\begin{equation}
+    \begin{aligned}
+        l(\textbf{w}, b|\textbf{x}) & =\log \mathcal{L}(\textbf{w}, b|\textbf{x})                                             \\
+                                    & =\sum_{i=1}\left[y^{(i)}\log(\sigma(z^{(i)}))+(1-y^{(i)})\log(1-\sigma(z^{(i)}))\right]
+    \end{aligned}
+\end{equation}
+
+\subsection{Tackling overfitting via regularization}
+Overfitting is a common problem in machine learning, where a model performs well on training data but does not generalize well to unseen data (test data). If a model suffers from overfitting, we also say that the model has a high variance, which can be caused by having too many parameters, leading to a model that is too complex given the underlying data. Similarly, our model can also suffer from underfitting (high bias), which means that our model is not complex enough to capture the pattern in the training data well and therefore also suffers from low performance on unseen data.
+
+One way of finding a good bias-variance tradeoff is to tune the complexity of the model via regularization. Regularization is a very useful method for handling collinearity (high correlation among features), filtering out noise from data, and eventually preventing overfitting.
+
+\begin{tcolorbox}[title=Regularization and feature normalization]
+    Regularization is another reason why feature scaling such as standardization is important. For regularization to work properly, we need to ensure that all our features are on comparable scales.
+\end{tcolorbox}
+
+The loss function for logistic regression can be regularized by adding a simple regularization term, which will shrink the weights during model training:
+\begin{equation}
+    L(\textbf{w}, b|\textbf{x})  =\sum_{i=1}\left[y^{(i)}\log(\sigma(z^{(i)}))+(1-y^{(i)})\log(1-\sigma(z^{(i)}))\right]+\frac{\lambda}{2n}||\textbf{w}||^2
+\end{equation}
+
+The parameter, \textsf{C}, that is implemented for the LogisticRegression class in scikit-learn comes from a convention in support vector machines. The term \textsf{C} is inversely proportional to the regularization parameter, $\lambda$ . Consequently, decreasing the value of the inverse regularization parameter, \textsf{C}, means that we are increasing the regularization strength.
+
+\begin{tcolorbox}[title=The bias-variance tradeoff]
+    Often, researchers use the terms “bias” and “variance” or “bias-variance tradeoff” to describe the performance of a model—that is, you may stumble upon talks, books, or articles where speople say that a model has a “high variance” or “high bias.” So, what does that mean? In general, we might say that “high variance” is proportional to overfitting and “high bias” is proportional to underfitting.
+
+    In the context of machine learning models, variance measures the consistency (or variability) of the model prediction for classifying a particular example if we retrain the model multiple times, for example, on different subsets of the training dataset. We can say that the model is sensitive to the randomness in the training data. In contrast, bias measures how far off the predictions are from the correct values in general if we rebuild the model multiple times on different training datasets; bias is the measure of the systematic error that is not due to randomness.
+\end{tcolorbox}
+\section{Maximum margin classification with support vector machines}
+In SVMs, our optimization objective is to maximize the margin. The margin is defined as the distance between the separating hyperplane (decision boundary) and the training examples that are closest to this hyperplane, which are the so-called support vectors.
+\subsection{Dealing with a nonlinearly separable case using slack variables}
+The motivation for introducing the slack variable was that the linear constraints in the SVM optimization objective need to be relaxed for nonlinearly separable data to allow the convergence of the optimization in the presence of misclassifications, under appropriate loss penalization.
+
+The use of the slack variable, in turn, introduces the variable, which is commonly referred to as \textsf{C} in SVM contexts. We can consider \textsf{C} as a hyperparameter for controlling the penalty for misclassification. Large values of \textsf{C} correspond to large error penalties, whereas we are less strict about misclassification errors if we choose smaller values for \textsf{C}. We can then use the \textsf{C} parameter to control the width of the margin and therefore tune the bias-variance tradeoff, as illustrated in \autoref{fig3-11}:
+
+\figures{fig3-11}{The impact of large and small values of the inverse regularization strength \textsf{C} on classification}
+
+\begin{tcolorbox}[title=Logistic regression versus SVMs]
+
+    In practical classification tasks, linear logistic regression and linear SVMs often yield very similar results. Logistic regression tries to maximize the conditional likelihoods of the training data, which makes it more prone to outliers than SVMs, which mostly care about the points that are closest to the decision boundary (support vectors). On the other hand, logistic regression has the advantage of being a simpler model and can be implemented more easily, and is mathematically easier to explain. Furthermore, \textbf{logistic regression models can be easily updated, which is attractive when working with streaming data}.
+\end{tcolorbox}
+\subsection{Alternative implementations in scikit-learn}
+The advantage of using LIBLINEAR and LIBSVM over, for example, native Python implementations is that they allow the extremely quick training of large amounts of linear classifiers. However, sometimes our datasets are too large to fit into computer memory. Thus, scikit-learn also offers alternative implementations via the SGDClassifier class, which also supports online learning via the \verb|partial_fit| method.
+\section{Solving nonlinear problems using a kernel SVM}
+\subsection{Kernel methods for linearly inseparable data}
+The basic idea behind kernel methods for dealing with such linearly inseparable data is to create nonlinear combinations of the original features to project them onto a higher-dimensional space via a mapping function, $\phi$ , where the data becomes linearly separable. As shown in Figure 3.14, we can transform a two-dimensional dataset into a new three-dimensional feature space, where the classes become separable via the following projection:
+$$\phi(x_1,x_2)=(z_1,z_2,z_3)=(x_1,x_2, x_1^2+x_2^2)$$
+
+\figures{fig3-14}{The process of classifying nonlinear data using kernel methods}
+\subsection{Using the kernel trick to find separating hyperplanes in a highdimensional space}
+To solve a nonlinear problem using an SVM, we would transform the training data into a higher-dimensional feature space via a mapping function, $\phi$ , and train a linear SVM model to classify the data in this new feature space. Then, we could use the same mapping function, $\phi$ , to transform new, unseen data to classify it using the linear SVM model.
+
+In practice, we just need to replace the dot product $\textbf{x}^{(i)T}\textbf{x}^{(j)}$ by $\phi(\textbf{x}^{(i)})^T\phi(\textbf{x}^{(j)})$. To save the expensive step of calculating this dot product between two points explicitly, we define a so-called kernel function:
+$$k(\textbf{x}^{(i)}\textbf{x}^{(j)})=\phi(\textbf{x}^{(i)})^T\phi(\textbf{x}^{(j)})$$
+
+Roughly speaking, the term “kernel” can be interpreted as a similarity function between a pair of examples. The minus sign inverts the distance measure into a similarity score, and, due to the exponential term, the resulting similarity score will fall into a range between 1 (for exactly similar examples) and 0 (for very dissimilar examples).
+
+The $\gamma$ parameter can be understood as a cut-off parameter for the Gaussian sphere. If we increase the value for $\gamma$, we increase the influence or reach of the training examples, which leads to a tighter and bumpier decision boundary.
+
+\section{Decision tree learning}
+Using the decision algorithm, we start at the tree root and split the data on the feature that results in the largest \textbf{information gain (IG)}.
+\subsection{Maximizing IG – getting the most bang for your buck}
+To split the nodes at the most informative features, we need to define an objective function to optimize via the tree learning algorithm. Here, our objective function is to maximize the IG at each split, which we define as follows:
+\begin{equation}
+    IG(D_p,f)=I(D_p)-\sum_{j=1}^{m}\frac{N_j}{N_p}I(D_j)
+\end{equation}
+Here, $f$ is the feature to perform the split; $D_p$ and $D_j$ are the dataset of the parent and $j$th child node; $I$ is our \textbf{impurity} measure; $N_p$ is the total number of training examples at the parent node; and $N_j$ is the number of examples in the $j$th child node. As we can see, the information gain is simply the difference between the impurity of the parent node and the sum of the child node impurities—the lower the impurities of the child nodes, the larger the information gain.
+
+The three impurity measures or splitting criteria that are commonly used in binary decision trees are \textbf{Gini impurity} ($I_G$), \textbf{entropy} ($I_H$), and the \textbf{classification error} ($I_E$). Let's start with the definition of entropy for all non-empty classes ($p(i|t)\neq 0$):
+\begin{equation}
+    I_H(t)=-\sum_{i=1}^{c}p(i|t)\log_2p(i|t)
+\end{equation}
+
+The Gini impurity can be understood as a criterion to minimize the probability of misclassification:
+\begin{equation}
+    I_G(t)=\sum_{i=1}^{c}p(i|t)(1-p(i|t))=1-\sum_{i=1}^{c}p(i|t)^2
+\end{equation}
+
+Another impurity measure is the classification error:
+\begin{equation}
+    I_E(t) = 1 - \max{p(i|t)}
+\end{equation}
+
+This is a useful criterion for pruning, but not recommended for growing a decision tree, since it is less sensitive to changes in the class probabilities of the nodes.
+
+\subsection{Building a decision tree}
+Although feature scaling may be desired for visualization purposes, note that feature scaling is not a requirement for decision tree algorithms.
+\subsection{}
+The idea behind a random forest is to average multiple (deep) decision trees that individually suffer from high variance to build a more robust model that has a better generalization performance and is less susceptible to overfitting. The random forest algorithm can be summarized in following:
+
+\begin{algorithm}
+    \Begin{
+        \For{$k\leftarrow 1$ \KwTo $K$}{
+            Draw a random bootstrap sample of size $n$ (randomly choose $n$ examples from the training dataset with replacement);
+
+            Grow a decision tree from the bootstrap sample;
+            \ForEach{node}{
+                Randomly select $d$ features without replacement\;
+                Split the node using the feature that provides the best split according to the objective function, for instance, maximizing the information gain\;
+            }
+        }
+        Aggregate the prediction by each tree to assign the class label by majority vote;
+    }
+    \caption{The random forest algorithm}
+\end{algorithm}
+\section{K-nearest neighbors – a lazy learning algorithm}
+KNN is a typical example of a lazy learner. It is called “lazy” not because of its apparent simplicity, but because it doesn't learn a discriminative function from the training data but memorizes the training dataset instead.
+
+The KNN algorithm itself is fairly straightforward and can be summarized by the following:
+\begin{algorithm}
+    \Begin{
+        Choose the number of $k$ and a distance metric\;
+        Find the $k$-nearest neighbors of the data record that we want to classify\;
+        Assign the class label by majority vote\;
+    }
+    \caption{The KNN algorithm}
+\end{algorithm}
+
+In the case of a tie, the scikit-learn implementation of the KNN algorithm will prefer the neighbors with a closer distance to the data record to be classified. If the neighbors have similar distances, the algorithm will choose the class label that comes first in the training dataset.
+
+It is important to mention that KNN is very susceptible to overfitting due to the \textbf{curse of dimensionality}. The curse of dimensionality describes the phenomenon where the feature space becomes increasingly sparse for an increasing number of dimensions of a fixed-size training dataset. We can think of even the closest neighbors as being too far away in a high-dimensional space to give a good estimate.
+
+\begin{tcolorbox}[title=Alternative machine learning implementations with GPU support]
+    If you have a computer equipped with an NVIDIA GPU that is compatible with recent versions of NVIDIA's CUDA library, we recommend considering the \href{https://docs.rapids.ai/api}{RAPIDS} ecosystem. For instance, RAPIDS' \href{https://docs.rapids.ai/api/cuml/stable/}{cuML} library implements many of scikit-learn's machine learning algorithms with GPU support to accelerate the processing speeds. You can find an \href{https://docs.rapids.ai/api/cuml/stable/estimator_intro.html}{introduction} to cuML.
+\end{tcolorbox}

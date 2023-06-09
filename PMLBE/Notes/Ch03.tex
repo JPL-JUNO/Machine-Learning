@@ -1,0 +1,81 @@
+\chapter{Recognizing Faces with Support Vector Machine\label{Ch03}}
+\section{Finding the separating boundary with SVM}
+We will continue with another great classifier, SVM, which is effective in cases with high-dimensional spaces or where the number of dimensions is greater than the number of samples.
+
+A \textbf{hyperplane} is a plane of $n - 1$ dimensions that separates the $n$-dimensional feature space of the observations into two spaces.
+
+The optimal hyperplane is picked so that the distance from its nearest points in each space to itself is maximized. And these nearest points are the so-called \textbf{support vectors}.
+
+\section{Scenario 2 – determining the optimal hyperplane}
+The nearest point(s) on the positive side can constitute a hyperplane parallel to the decision hyperplane, which we call a positive hyperplane; on the other hand, the nearest point(s) on the negative side can constitute the negative hyperplane. The perpendicular distance between the positive and negative hyperplanes is called the margin, the value of which equates to the sum of the two aforementioned distances. A decision hyperplane is deemed optimal if the margin is maximized.
+
+\figures{fig3-4}{An example of an optimal hyperplane and distance margins}
+
+\section{Scenario 4 – dealing with more than two classes}
+SVM and many other classifiers can be applied to cases with more than two classes.
+There are two typical approaches we can take, one-vs-rest (also called one-vs-all) and one-vs-one.
+
+In the one-vs-rest setting, for a $K$-class problem, we construct $K$ different binary SVM classifiers. For the $k^{th}$ classifier, it treats the kth class as the positive case and the remaining $K-1$ classes as the negative case as a whole; the hyperplane denoted as $(w_k, b_k)$ is trained to separate these two cases. To predict the class of a new sample, $x^{\prime}$, it compares the resulting predictions $w_kx^{\prime}+b_k$ from K individual classifiers from 1 to k. As we discussed in the previous section, the larger value of $w_kx^{\prime}+b_k$ means higher confidence that $x^{\prime}$ belongs to the positive case. Therefore, it assigns $x^{\prime}$ to the class $i$ where $w_ix^{\prime}+b_i$ has \textbf{the largest value among all prediction results}:
+$$y^{\prime}=argmax_i(w_kx^{\prime}+b_k)$$
+
+In the one-vs-one strategy, we conduct a pairwise comparison by building a set of
+SVM classifiers that can distinguish data points from each pair of classes. This will result in $K(K-1)/2$ different classifiers.
+
+For a classifier associated with classes $i$ and $j$, the hyperplane denoted as $(w_{ij}, b_{ij})$ is trained only on the basis of observations from $i$ (can be viewed as a positive case) and $j$ (can be viewed as a negative case); it then assigns the class, either $i$ or $j$, to a new sample, $x^{\prime}$, based on the sign of $w_{ij}x^{\prime} + b_{ij}$ . Finally, the class with the highest number of assignments is considered the predicting result of $x^{\prime}$. \textbf{The winner is the class that gets the most votes}.
+
+Although one-vs-one requires more classifiers, $K(K - 1)/2$, than one-vs-rest ($K$), each pairwise classifier only needs to learn on a small subset of data, as opposed to the entire set in the one-vs-rest setting. As a result, training an SVM model in the one-vs-one setting is generally more memory efficient and less computationally expensive, and hence is preferable for practical use\footnote{Chih-Wei Hsu and Chih-Jen Lin's A comparison of methods for multiclass support vector machines (IEEE Transactions on Neural Networks, March 2002, Volume 13, pp. 415-425)}.
+
+\section{Scenario 5 – solving linearly non-separable problems with kernels}
+The most popular kernel function is probably the \textbf{radial basis function (RBF)} kernel (also called the Gaussian kernel), which is defined as follows:
+$$K(x^{(i)}, x^{(j)})=\exp(-\frac{||x^{(i)}- x^{(j)}||}{2\sigma^2})=\exp(-\gamma||x^{(i)}- x^{(j)}||^2)$$
+
+Here, $\gamma=\frac{1}{2\sigma^2}$. In the Gaussian function, the standard deviation $\sigma$ controls the amount of variation or dispersion allowed: the higher the $\sigma$ (or the lower the $\gamma$ ), the larger the width of the bell, and the wider the range is that data points are allowed to spread out over. Therefore, $\gamma$ as the \textbf{kernel coefficient} determines how strictly or generally the kernel function fits the observations. A large $\gamma$ implies a small variance allowed and a relatively exact fit on the training samples, which might lead to overfitting. On the other hand, a small $\gamma$ implies a high variance allowed and a loose fit on the training samples, which might cause underfitting.
+
+Some other common kernel functions include the \textbf{polynomial} kernel
+$$K(x^{(i)}, x^{(j)})=(x^{(i)}x^{(j)}+\gamma)^d$$
+and the \textbf{sigmoid} kernel:
+$$K(x^{(i)}, x^{(j)})=\tanh(x^{(i)}x^{(j)}+\gamma)$$
+
+In the absence of prior knowledge of the distribution, the RBF kernel is usually preferable in practical usage, as there is an additional parameter to tweak in the polynomial kernel (polynomial degree d) and the empirical sigmoid kernel can perform approximately on a par with the RBF, but only under certain parameters. Hence, we come to a debate between the linear (also considered no kernel) and the RBF kernel given a dataset.
+
+\section{Choosing between linear and RBF kernels}
+Of course, linear separability is the rule of thumb when choosing the right kernel to start with. However, most of the time this is very difficult to identify, unless you have sufficient prior knowledge of the dataset, or its features are of low dimensions (1 to 3).
+
+\begin{tcolorbox}
+    Some general prior knowledge that is commonly known includes that text data is often linearly separable, while data generated from the XOR function is not.
+\end{tcolorbox}
+
+Now, let's look at the following three scenarios where the linear kernel is favored
+over RBF.
+
+\begin{description}
+    \item[Scenario 1]Both the number of features and the number of instances are large (more than 104 or 105). Since the dimension of the feature space is high enough, additional features as a result of RBF transformation will not provide a performance improvement, but this will increase the computational expense.
+    \item[Scenario 2]The number of features is noticeably large compared to the number of training samples. Apart from the reasons stated in scenario 1, the RBF kernel is significantly more prone to overfitting.
+    \item[Scenario 3]The number of instances is significantly large compared to the number of features. For a dataset of low dimension, the RBF kernel will, in general, boost the performance by mapping it to a higher-dimensional space. However, due to the training complexity, it usually becomes inefficient on a training set with more than 106 or 107 samples.
+\end{description}
+
+The rules for choosing between linear and RBF kernels can be summarized as \autoref{tbl3-1}:
+\begin{table}
+    \centering
+    \caption{Rules for choosing between linear and RBF kernels}
+    \label{tbl3-1}
+    \begin{tabularx}{\textwidth}{Xll}
+        \hline
+        Scenario                                                        & Linear                & RBF                      \\
+        \hline
+        Prior knowledge                                                 & If linearly separable & If nonlinearly separable \\
+        Visualizable data of 1 to 3 dimension(s)                        & If linearly separable & If nonlinearly separable \\
+        Both the number of features and number of instances are  large. & First choice          &                          \\
+        Features $>>$ Instances                                         & First choice          &                          \\
+        Instances $>>$ Features                                         & First choice          &                          \\
+        Others                                                          &                       & First choice             \\
+        \hline
+    \end{tabularx}
+\end{table}
+\section{Classifying face images with SVM}
+\subsection{Building an SVM-based image classifier}
+There is another SVM classifier, \href{https://scikit-learn.org/stable/modules/generated/sklearn.svm.LinearSVC.html}{LinearSVC}, from scikit-learn. How is it different from SVC? LinearSVC is similar to SVC with linear kernels, but it is implemented based on the liblinear library, which is better optimized than libsvm with the linear kernel, and its penalty function is more flexible.
+
+\begin{tcolorbox}
+    In general, training with the LinearSVC model is faster than SVC. This is because the liblinear library with high scalability is designed for large datasets, while the libsvm library with more than quadratic computation complexity is not able to scale well with more than $10^5$ training instances. But again, the LinearSVC model is limited to only linear kernels.
+\end{tcolorbox}
