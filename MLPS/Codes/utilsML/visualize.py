@@ -6,6 +6,8 @@
 """
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as Patheffects
+from array import array
 from matplotlib.colors import ListedColormap
 from numpy import ndarray
 
@@ -32,6 +34,19 @@ def plot_decision_regions(X, y, classifier, resolution: float = .02, test_idx=No
         X_test, y_test = X[test_idx, :], y[test_idx]
         plt.scatter(X_test[:, 0], X_test[:, 1], alpha=1, c='none', edgecolors='black',
                     linewidth=1, marker='o', s=100, label='Test samples')
+
+
+def plot_project(x: ndarray, colors: array):
+    f = plt.figure(figsize=(8, 8))
+    ax = plt.subplot(aspect='equal')
+    for i in range(10):
+        plt.scatter(x[colors == i, 0],
+                    x[colors == i, 1])
+    for i in range(10):
+        x_text, y_text = np.median(x[colors == i, :], axis=0)
+        txt = ax.text(x_text, y_text, str(i), fontsize=24)
+        txt.set_path_effects([Patheffects.Stroke(linewidth=5, foreground='w'),
+                              Patheffects.Normal()])
 
 
 if __name__ == '__main__':
