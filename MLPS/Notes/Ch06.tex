@@ -1,0 +1,22 @@
+\chapter{Learning Best Practices for Model Evaluation and Hyperparameter Tuning\label{Ch06}}
+\section{Fine-tuning machine learning models via grid search}
+\subsection{More resource-efficient hyperparameter search with successive halving}
+Taking the idea of randomized search one step further, scikit-learn implements a successive halving variant, HalvingRandomSearchCV, that makes finding suitable hyperparameter configurations more efficient. Successive halving, given a large set of candidate configurations, successively throws out unpromising hyperparameter configurations until only one configuration remains. We can summarize the procedure via the following steps:
+\begin{enumerate}
+    \item Draw a large set of candidate configurations via random sampling
+    \item Train the models with limited resources, for example, a small subset of the training data (as opposed to using the entire training set)
+    \item Discard the bottom 50 percent based on predictive performance
+    \item Go back to step 2 with an increased amount of available resources
+\end{enumerate}
+
+\subsection{Algorithm selection with nested cross-validation}
+If we want to select among different machine learning algorithms, though, another recommended approach is \textbf{nested cross-validation}.
+
+\figures{fig6-8}{The concept of nested cross-validation}
+\section{Looking at different performance evaluation metrics}
+There are several other performance metrics that can be used to measure a model’s relevance, such as precision, recall, the \textbf{F1 score}, and \textbf{Matthews correlation coefficient (MCC)}.
+\subsection{Optimizing the precision and recall of a classification model}
+A measure that summarizes a confusion matrix is the MCC, which is especially popular in biological research contexts. The MCC is calculated as follows:
+$$MCC=\frac{TP\times TN-FP\times FN}{\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}}\in [-1, 1]$$
+
+In contrast to PRE, REC, and the F1 score, the MCC ranges between –1 and 1, and it takes all elements of a confusion matrix into account—for instance, the F1 score does not involve the TN. While the MCC values are harder to interpret than the F1 score, it is regarded as a superior metric.
