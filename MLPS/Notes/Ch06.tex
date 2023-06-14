@@ -20,3 +20,24 @@ A measure that summarizes a confusion matrix is the MCC, which is especially pop
 $$MCC=\frac{TP\times TN-FP\times FN}{\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}}\in [-1, 1]$$
 
 In contrast to PRE, REC, and the F1 score, the MCC ranges between –1 and 1, and it takes all elements of a confusion matrix into account—for instance, the F1 score does not involve the TN. While the MCC values are harder to interpret than the F1 score, it is regarded as a superior metric.
+
+\subsection{Scoring metrics for multiclass classification}
+scikit-learn also implements macro and micro averaging methods to extend those scoring metrics
+to multiclass problems via \textbf{one-vs.-all (OvA)} classification. The micro-average is calculated from the
+individual TPs, TNs, FPs, and FNs of the system. For example, the micro-average of the precision score
+in a k-class system can be calculated as follows:
+$$RPE_{micro}=\frac{TP_1+\cdots+TP_k}{TP_1+\cdots+TP_k+FP_1+\cdots+FP_k}$$
+
+The macro-average is simply calculated as the average scores of the different systems:
+$$PRE_{micro}=\frac{PRE_1+\cdots+PRE_k}{k}$$
+Micro-averaging is useful if we want to weight each instance or prediction equally, whereas macro-averaging weights all classes equally to evaluate the overall performance of a classifier with regard to the most frequent class labels.
+
+If we are using binary performance metrics to evaluate multiclass classification models in scikit-learn, a normalized or weighted variant of the macro-average is used by default. The weighted macro-average is calculated by weighting the score of each class label \textit{by the number of true instances when calculating the average}. The weighted macro-average is useful if we are dealing with class imbalances, that is, different numbers of instances for each label.
+
+Aside from evaluating machine learning models, class imbalance influences a learning algorithm during model fitting itself. Since machine learning algorithms typically optimize a reward or loss function that is computed as a sum over the training examples that it sees during fitting, the decision rule is likely going to be biased toward the majority class.
+
+One way to deal with imbalanced class proportions during model fitting is to assign a larger penalty to wrong predictions on the minority class. Other popular strategies for dealing with class imbalance include upsampling the minority class, downsampling the majority class, and the generation of synthetic training examples.
+
+\begin{tcolorbox}[title=Generating new training data to address class imbalance]
+    Another technique for dealing with class imbalance is the generation of synthetic training examples. Probably the most widely used algorithm for synthetic training data generation is Synthetic Minority Over-sampling Technique (SMOTE)
+\end{tcolorbox}

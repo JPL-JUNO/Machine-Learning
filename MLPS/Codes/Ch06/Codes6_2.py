@@ -52,7 +52,7 @@ from sklearn.model_selection import RandomizedSearchCV
 pipe_svc = make_pipeline(StandardScaler(),
                          SVC(random_state=1))
 rs = RandomizedSearchCV(estimator=pipe_svc, param_distributions=param_grid,
-                        scoring='accuracy',refit=True, n_iter=20, cv=10, 
+                        scoring='accuracy', refit=True, n_iter=20, cv=10,
                         random_state=1, n_jobs=-1)
 rs.fit(X_train, y_train)
 print(rs.best_score_)
@@ -74,10 +74,10 @@ print(f'Test accuracy: {hs.score(X_test, y_test):.3f}')
 
 # Algorithm selection with nested cross-validation
 gs = GridSearchCV(estimator=pipe_svc,
-                  param_grid=param_grid,scoring='accuracy',cv=2)
+                  param_grid=param_grid, scoring='accuracy', cv=2)
 from sklearn.model_selection import cross_val_score
-scores = cross_val_score(gs, X_train, y_train, 
-                         scoring='accuracy',cv=5)
+scores = cross_val_score(gs, X_train, y_train,
+                         scoring='accuracy', cv=5)
 print(f'CV Accuracy: {np.mean(scores):.3f} +/- {np.std(scores):.3f}')
 
 # compare an svm model to a simple decision tree
