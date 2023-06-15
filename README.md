@@ -1,8 +1,15 @@
 # Machine-Learning
 
-## Contributor(s):
+## Contributor(s)
 
 - [Stephen CUI](https://github.com/JPL-JUNO)
+
+## Status Table
+
+| Title                                          | Notes | Status    |
+| ---------------------------------------------- | ----- | --------- |
+| Machine Learning with PyTorch and Scikit-Learn | 😀     | reading 📑 |
+| Python Machine Learning By Example             | 😀     | reading 📑 |
 
 ## Covers and Links to books you maybe have interest
 
