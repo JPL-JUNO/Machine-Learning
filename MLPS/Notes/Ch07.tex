@@ -1,3 +1,44 @@
 \chapter{Combining Different Models for Ensemble Learning\label{Ch07}}
 \section{Learning with ensembles}
 The goal of ensemble methods is to combine different classifiers into a meta-classifier that has better generalization performance than each individual classifier alone.
+\section{Bagging – building an ensemble of classifiers from bootstrap samples}
+Instead of using the same training dataset to fit the individual classifiers in the ensemble, we draw bootstrap samples (random samples with replacement) from the initial training dataset, which is why bagging is also known as \textit{bootstrap aggregating}.
+
+The concept of bagging is summarized in \autoref{fig7-6}:
+\figures{fig7-6}{The concept of bagging}
+\subsection{Bagging in a nutshell}
+In fact, random forests are a special case of bagging where we also use random feature subsets when fitting the individual decision trees.
+
+In practice, more complex classification tasks and a dataset's high dimensionality can easily lead to overfitting in single decision trees, and this is where the bagging algorithm can really play to its strengths. Finally, we must note that the bagging algorithm can be an effective approach to reducing the variance of a model. However, bagging is ineffective in reducing model bias, that is, models that are too simple to capture the trends in the data well. This is why we want to perform bagging on an ensemble of classifiers with low bias, for example, unpruned decision trees.
+\section{Leveraging weak learners via adaptive boosting}
+We will discuss \textbf{boosting}, with a special focus on its most common implementation: \textbf{Adaptive Boosting} (AdaBoost).
+
+In boosting, the ensemble consists of very simple base classifiers, also often referred to as weak learners, which often only have a slight performance advantage over random guessing—a typical example of a weak learner is a decision tree stump. The key concept behind boosting is to focus on training examples that are hard to classify, that is, to let the weak learners subsequently learn from misclassified training examples to improve the performance of the ensemble.
+\subsection{How adaptive boosting works}
+In contrast to bagging, the initial formulation of the boosting algorithm uses random subsets of training examples drawn from the training dataset without replacement; the original boosting procedure can be summarized in the following four key steps:
+\begin{enumerate}
+    \item Draw a random subset (sample) of training examples, $d_1$, without replacement from the training dataset, $D$, to train a weak learner, $C_1$.
+    \item Draw a second random training subset, $d_2$, without replacement from the training dataset and add 50 percent of the examples that were previously misclassified to train a weak learner, $C_2$.
+    \item Find the training examples, $d_3$, in the training dataset, $D$, which $C_1$ and $C_2$ disagree upon, to train a third weak learner, $C_3$.
+    \item Combine the weak learners $C_1$, $C_2$, and $C_3$ via majority voting.
+\end{enumerate}
+
+As discussed by Leo Breiman, boosting can lead to a decrease in bias as well as variance compared to bagging models. In practice, however, boosting algorithms such as AdaBoost are also known for their high variance, that is, the tendency to overfit the training data.
+
+\figures{fig7-9}{The concept of AdaBoost to improve weak learners}
+
+\begin{algorithm}
+    \Begin{
+        initialization, Set the weight vector, $\textbf{w}$, to uniform weights, where $\sum_{i}w_i=1$\;
+        \For{$j\rightarrow 1$\KwTo $m$}{
+            Train a weighted weak learner: $C_j = train(\textbf{X}, \textbf{y}, \textbf{w})$\;
+            Predict class labels: $\hat{y} = predict(C_j, \textbf{X})$\;
+            Compute the weighted error rate: $\epsilon=\textbf{W}\cdot(\hat{\textbf{y}}\neq \textbf{y})$\;
+            Compute the coefficient:$\alpha_j= 0.5\log\frac{1-\epsilon}{\epsilon}$\;
+            Update the weights: $\textbf{w}\leftarrow\textbf{w}\times\exp(-\alpha_j\times\hat{\textbf{y}}\times\textbf{y})$\;
+            Normalize the weights to sum to 1:$\textbf{w}\leftarrow\textbf{w}/\sum_{i}w_i$\;
+        }
+        Compute the final prediction: $\hat{\textbf{y}}=\left(\sum_{j=1}^{m}\left(\alpha_j\times predict(C_j, \textbf{X})\right)\right)$\;
+    }
+    \caption{AdaBoost algorithm}
+\end{algorithm}
