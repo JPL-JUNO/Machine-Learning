@@ -1,0 +1,35 @@
+\chapter{Applying Machine Learning to Sentiment Analysis\label{Ch08}}
+\section{Introducing the bag-of-words model}
+The idea behind bag-of-words is quite simple and can be summarized as follows:
+\begin{enumerate}
+    \item We create a vocabulary of unique tokens—for example, words—from the entire set of documents.
+    \item We construct a feature vector from each document that contains the counts of how often each word occurs in the particular document.
+\end{enumerate}
+\subsection{Assessing word relevancy via term frequency-inverse document frequency}
+you will learn about a useful technique called the term frequency-inverse document frequency (tf-idf), which can be used to downweight these frequently occurring words in the feature vectors. The tf-idf can be defined as the product of the term frequency and the inverse document frequency:
+$$tf-idf(t, d)=tf(t,d)\times idf(t, d)$$
+
+Here, $tf(t, d)$ is the term frequency, and $idf(t, d)$ is the inverse
+document frequency, which can be calculated as follows:
+\begin{equation}
+    \label{tfidf}
+    idf(t, d)=\log\frac{n_d}{1+df(d, t)}
+\end{equation}
+Here, $n_d$ is the total number of documents, and $df(d, t)$ is the number of documents, $d$, that contain
+the term $t$.
+
+\autoref{tfidf} for the inverse document frequency implemented in scikit-learn is computed as follows:
+\begin{equation}
+    idf(t, d)=\log\frac{1+n_d}{1+df(d, t)}
+\end{equation}
+
+Similarly, the tf-idf computed in scikit-learn deviates slightly from the default equation we defined earlier:
+$$tf-idf(t, d)=tf(t,d)\times (idf(t, d)+1)$$
+Note that the “$+1$” in the idf equation is due to setting \verb|smooth_idf=True|, which is helpful for assigning zero weight (that is, $idf(t, d) = log(1) = 0$) to terms that occur in all documents.
+
+\subsection{Processing documents into tokens}
+After successfully preparing the movie review dataset, we now need to think about how to split the text corpora into individual elements. One way to tokenize documents is to split them into individual words by splitting the cleaned documents at their whitespace characters.
+
+In the context of tokenization, another useful technique is word stemming, which is the process of transforming a word into its root form.
+\section{Working with bigger data – online algorithms and out-of-core learning}
+Since not everyone has access to supercomputer facilities, we will now apply a technique called out-of-core learning, which allows us to work with such large datasets by fitting the classifier incrementally on smaller batches of a dataset.
