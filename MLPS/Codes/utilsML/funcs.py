@@ -38,6 +38,8 @@ def tokenizer_porter(text: str) -> list:
     return [porter.stem(word) for word in text.split()]
 
 
+import nltk
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 stop = stopwords.words('english')
 
