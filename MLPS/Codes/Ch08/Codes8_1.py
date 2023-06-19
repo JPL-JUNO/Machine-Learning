@@ -24,13 +24,15 @@ for s in ('test', 'train'):
             if version.parse(pd.__version__) >= version.parse('1.3.2'):
                 x = pd.DataFrame([[txt, labels[l]]], columns=[
                                  'review', 'sentiment'])
-                df = pd.concat([df, x], ignore_index=False)
+                # df = pd.concat([df, x], ignore_index=False)
+                df = pd.concat([df, x], ignore_index=True)
             else:
                 df = df.append([[txt, labels[l]]], ignore_index=True)
             p_bar.update()
 df.columns = ['review', 'sentiment']
 
-
+# if version.parse(pd.__version__) >= version.parse('1.3.2'):
+#     df.sample(frac=1, random_state=0).reset_index(drop=True)
 import numpy as np
 np.random.seed(0)
 df = df.reindex(np.random.permutation(df.index))

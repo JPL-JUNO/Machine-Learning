@@ -33,3 +33,9 @@ After successfully preparing the movie review dataset, we now need to think abou
 In the context of tokenization, another useful technique is word stemming, which is the process of transforming a word into its root form.
 \section{Working with bigger data – online algorithms and out-of-core learning}
 Since not everyone has access to supercomputer facilities, we will now apply a technique called out-of-core learning, which allows us to work with such large datasets by fitting the classifier incrementally on smaller batches of a dataset.
+
+\begin{tcolorbox}[title=The word2vec model]
+    A more modern alternative to the bag-of-words model is word2vec, an algorithm that Google released in 2013 (\href{https://arxiv.org/abs/1301.3781}{\textit{Efficient Estimation of Word Representations in Vector Space by T.Mikolov, K. Chen, G. Corrado, and J. Dean}}, ).
+
+    The word2vec algorithm is an unsupervised learning algorithm based on neural networks that attempts to automatically learn the relationship between words. The idea behind word2vec is to put words that have similar meanings into similar clusters, and via clever vector spacing, the model can reproduce certain words using simple vector math, for example, $king – man + woman = queen$.
+\end{tcolorbox}
