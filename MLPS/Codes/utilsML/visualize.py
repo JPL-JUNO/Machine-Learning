@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patheffects as Patheffects
 from array import array
 from matplotlib.colors import ListedColormap
+from matplotlib.pyplot import Axes
 from numpy import ndarray
 from itertools import product
 
@@ -78,6 +79,11 @@ def plot_decision_regions_subplots(X, y, classifier,
     fig.supylabel(xylabel[1], fontsize=12)
     if tight_layout:
         plt.tight_layout()
+
+
+def lin_reg_plot(X, y, model, ax: Axes):
+    ax.scatter(X, y, c='steelblue', edgecolor='white', s=70)
+    ax.plot(X, model.predict(X), color='black', lw=2)
 
 
 if __name__ == '__main__':

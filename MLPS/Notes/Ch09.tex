@@ -1,0 +1,13 @@
+\chapter{Predicting Continuous Target Variables with Regression Analysis\label{Ch09}}
+\section{Fitting a robust regression model using RANSAC}
+\begin{algorithm}
+    \Begin{
+        \Repeat{the performance meets a certain user-defined threshold or if a fixed number of iterations was reached}{
+            Select a random number of examples to be inliers and fit the model\;
+            Test all other data points against the fitted model and add those points that fall within a user-given tolerance to the inliers\;
+            Refit the model using all inliers\;
+            Estimate the error of the fitted model versus the inliers\;
+        }
+    }
+    \caption{RANdom SAmple Consensus (RANSAC) algorithm}
+\end{algorithm}
