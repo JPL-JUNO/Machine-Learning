@@ -1,0 +1,69 @@
+\usepackage{amsmath}
+\usepackage{mathptmx}
+\usepackage{ctex}
+\usepackage{minted}
+\usepackage{tcolorbox}
+\usepackage{epigraph}
+\usepackage{caption}
+\usepackage{graphicx}
+\setkeys{Gin}{width=0.75\textwidth}
+\usepackage{listings}
+
+
+\setminted[python]{bgcolor=orange!5, linenos, breakanywhere=true}
+%定义新的minted命令
+\newminted[pyc]{python}{}
+
+
+\title{\textbf{Python Feature Engineering Cookbook}}
+
+\author{Stephen CUI\thanks{cuixuanStephen@gmail.com}}
+
+\newcommand\explain[2]{
+	\begin{tcolorbox}[breakable,colback=orange!5,colframe=orange!95!black,title=\textbf{#1}, breakable]
+		#2
+	\end{tcolorbox}
+}
+
+\newcommand\notes[1]{\textbf{Notes: } #1}
+\newcommand\warning[1]{\textbf{Warning: } #1}
+\newcommand\figures[1]{
+	\begin{figure}[H]
+		\centering
+		\includegraphics{../img/#1.png}
+		\caption{#1}
+		\label{#1}
+	\end{figure}
+}
+
+
+\tcbuselibrary{minted, skins, breakable}
+\newtcblisting[auto counter, number within = chapter]{Tip}{
+	colback=orange!5!white,colframe=orange!75!black,listing only, left=5mm,enhanced,
+	title=Tip~\thetcbcounter,
+	breakable,
+}
+\newcommand\Tips[1]{
+	\begin{tcolorbox}[
+			colback=orange!5!white,
+			colframe=orange!75!black,
+			left=5mm,
+			enhanced,
+			title=Tip,
+			breakable,]
+		#1
+	\end{tcolorbox}
+}
+
+\usepackage{geometry}
+\geometry{left=2.45cm,right=2.45cm, top=2.77cm, bottom=2.77cm}
+
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=orange!95!black,
+	filecolor=blue,
+	urlcolor=blue!70!white,
+	citecolor=blue,
+}
+
