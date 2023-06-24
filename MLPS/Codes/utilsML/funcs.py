@@ -7,6 +7,8 @@
 from scipy.special import comb
 import math
 import re
+from numpy import ndarray
+import numpy as np
 
 
 def ensemble_error(n_classifier: int, error: float):
@@ -48,6 +50,19 @@ def tokenizer2(text: str) -> list:
     text = preprocessor(text)
     tokenized = [w for w in text.split() if w not in stop]
     return tokenized
+
+
+def mean_absolute_deviation(data: ndarray) -> float:
+    """mean absolute deviation (median absolute deviation, MAD)
+
+    Args:
+        data (ndarray): _description_
+
+    Returns:
+        float: _description_
+    """
+    assert len(data.shape) == 1
+    return np.mean(np.abs(data - np.mean(data)))
 
 
 if __name__ == '__main__':
