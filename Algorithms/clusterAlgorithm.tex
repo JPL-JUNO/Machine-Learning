@@ -1,0 +1,30 @@
+\chapter{Clustering}
+The goal of clustering is to find a natural grouping in data so that items in the same cluster are more similar to each other than to those from different clusters.
+\section{Prototype-based clustering}
+Prototype-based clustering means that each cluster is represented by a prototype, which is usually either the \textbf{centroid} (average) of similar points with continuous features, or the \textbf{medoid} (the most representative or the point that minimizes the distance to all other points that belong to a particular cluster) in the case of categorical features.
+\subsection{k-means clustering}
+\begin{algorithm}
+    \Begin{
+        Randomly pick $k$ centroids from the examples as initial cluster centers\;
+        \Repeat{
+            the cluster assignments do not change or a user-defined tolerance or maximum number of iterations is reached
+        }{
+            Assign each example to the nearest centroid, $\mu^{(i)}, j \in \{1,\dots, k\}$\;
+            Move the centroids to the center of the examples that were assigned to it\;}
+    }
+    \caption{The k-means algorithm}
+    \label{kmeans}
+\end{algorithm}
+\subsection{k-means++}
+
+\begin{algorithm}
+    \Begin{
+        Initialize an empty set, $M$, to store the $k$ centroids being selected\;
+        Randomly choose the first centroid from the input examples and  $M \leftarrow \mu^{(j)}$\;
+        \Repeat{k centroids are chosen}{
+            For each example, $\textbf{x}^{(i)}$, that is not in $M$, find the minimum squared distance, $d(x^{(i)}, M)^2$, to any of the centroids in $M$\;
+            To randomly select the next centroid, $\mu^{(p)}$, use a weighted probability distribution equal to
+        }
+    }
+    \caption{The k-means++ algorithm}
+\end{algorithm}

@@ -108,5 +108,25 @@ def plot_residual(X_train, y_train, X_test, y_test, model):
     plt.show()
 
 
+def plot_k_means(X, model, centers: int = 3):
+    y_km = model.fit_predict(X)
+    shapes = ['s', 'v', '^', 'o']
+    colors = ['lightgreen', 'orange', 'lightblue', 'lightyellow']
+    fig, ax = plt.subplots()
+    for i, shape, color in zip(range(centers), shapes, colors):
+        ax.scatter(X[y_km == i, 0],
+                   X[y_km == i, 1], s=50, c=color, marker=shape,
+                   label=f'Cluster {i}')
+    ax.scatter(model.cluster_centers_[:, 0],
+               model.cluster_centers_[:, 1],
+               s=250, marker='*', c='red', edgecolor='black', label='Centroids')
+    ax.set_xlabel('Feature 1')
+    ax.set_ylabel('Feature 2')
+    plt.legend()
+    plt.grid()
+    plt.tight_layout()
+    plt.show()
+
+
 if __name__ == '__main__':
     pass

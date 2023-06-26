@@ -1,0 +1,19 @@
+\chapter{Working with Unlabeled Data – Clustering Analysis\label{Ch01}}
+\section{Grouping objects by similarity using k-means}
+\subsection{k-means clustering using scikit-learn}
+\begin{algorithm}
+    \Begin{
+        Randomly pick $k$ centroids from the examples as initial cluster centers\;
+        \Repeat{
+            the cluster assignments do not change or a user-defined tolerance or maximum number of iterations is reached
+        }{
+            Assign each example to the nearest centroid, $\mu^{(i)}, j \in \{1,\dots, k\}$\;
+            Move the centroids to the center of the examples that were assigned to it\;}
+    }
+    \caption{The k-means algorithm}
+\end{algorithm}
+
+A problem with k-means is that one or more clusters can be empty.
+\begin{tcolorbox}[title=Feature scaling]
+    When we are applying k-means to real-world data using a Euclidean distance metric, we want to make sure that the features are measured on the same scale and apply z-score standardization or min-max scaling if necessary.
+\end{tcolorbox}
