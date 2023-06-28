@@ -17,3 +17,23 @@ A problem with k-means is that one or more clusters can be empty.
 \begin{tcolorbox}[title=Feature scaling]
     When we are applying k-means to real-world data using a Euclidean distance metric, we want to make sure that the features are measured on the same scale and apply z-score standardization or min-max scaling if necessary.
 \end{tcolorbox}
+
+\section{Organizing clusters as a hierarchical tree}
+\subsection{Grouping clusters in a bottom-up fashion}
+The two standard algorithms for agglomerative hierarchical clustering are single linkage and complete linkage. Using single linkage, we compute the distances between the most similar members for each pair of clusters and merge the two clusters for which the distance between the most similar members is the smallest. The complete linkage approach is similar to single linkage but, instead of comparing the most similar members in each pair of clusters, we compare the most dissimilar members to perform the merge. This is shown in \autoref{fig10-7}:
+
+\figures{fig10-7}{The complete linkage approach}
+
+\begin{tcolorbox}[title=Alternative types of linkages]
+
+    Other commonly used algorithms for agglomerative hierarchical clustering include average linkage and Ward’s linkage. In average linkage, we merge the cluster pairs based on the minimum average distances between all group members in the two clusters. In Ward’s linkage, the two clusters that lead to the minimum increase of the total within-cluster SSE are merged.
+\end{tcolorbox}
+\section{Locating regions of high density via DBSCAN}
+According to the DBSCAN algorithm, a special label is assigned to each example (data point) using the following criteria:
+
+\begin{itemize}
+    \item A point is considered a \textbf{core point} if at least a specified number (MinPts) of neighboring points fall within the specified radius, $\epsilon$
+    \item A \textbf{border point} is a point that has fewer neighbors than MinPts within $\epsilon$ , but lies within the $\epsilon$ radius of a core point
+    \item All other points that are neither core nor border points are considered \textbf{noise points}
+\end{itemize}
+\figures{fig10-13}{Core, noise, and border points for DBSCAN}

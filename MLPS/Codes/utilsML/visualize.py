@@ -12,6 +12,7 @@ from matplotlib.colors import ListedColormap
 from matplotlib.pyplot import Axes
 from numpy import ndarray
 from itertools import product
+from matplotlib import cm
 
 
 def plot_decision_regions(X, y, classifier, resolution: float = .02, test_idx=None):
@@ -117,6 +118,7 @@ def plot_k_means(X, model, centers: int = 3):
         ax.scatter(X[y_km == i, 0],
                    X[y_km == i, 1], s=50, c=color, marker=shape,
                    label=f'Cluster {i}')
+
     ax.scatter(model.cluster_centers_[:, 0],
                model.cluster_centers_[:, 1],
                s=250, marker='*', c='red', edgecolor='black', label='Centroids')
@@ -124,6 +126,51 @@ def plot_k_means(X, model, centers: int = 3):
     ax.set_ylabel('Feature 2')
     plt.legend()
     plt.grid()
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_cluster(X, model, centers: int = 3, plot_centers: bool = True):
+    y_km = model.fit_predict(X)
+    shapes = ['s', 'v', '^', 'o']
+    colors = ['lightgreen', 'orange', 'lightblue', 'lightyellow']
+    fig, ax = plt.subplots()
+    for i, shape, color in zip(range(centers), shapes, colors):
+        ax.scatter(X[y_km == i, 0],
+                   X[y_km == i, 1], s=50, c=color, marker=shape,
+                   label=f'Cluster {i}')
+    if plot_centers:
+        ax.scatter(model.cluster_centers_[:, 0],
+                   model.cluster_centers_[:, 1],
+                   s=250, marker='*', c='red', edgecolor='black', label='Centroids')
+    ax.set_xlabel('Feature 1')
+    ax.set_ylabel('Feature 2')
+    plt.legend()
+    plt.grid()
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_silhouette_coefficients(clusters, silhouette_vals, y_km):
+    y_ax_lower, y_ax_upper = 0, 0
+    yticks = []
+    n_clusters = clusters.shape[0]
+    fig, ax = plt.subplots(1)
+    for i, c in enumerate(clusters):
+        c_silhouette_vals = silhouette_vals[y_km == c]
+        c_silhouette_vals.sort()
+        y_ax_upper += len(c_silhouette_vals)
+
+        color = cm.jet(float(i) / n_clusters)
+        ax.barh(range(y_ax_lower, y_ax_upper), c_silhouette_vals,
+                height=1.0, edgecolor='none', color=color)
+        yticks.append((y_ax_lower + y_ax_upper) / 2)
+        y_ax_lower += len(c_silhouette_vals)
+    silhouette_avg = np.mean(silhouette_vals)
+    ax.axvline(silhouette_avg, color='red', linestyle='--')
+    ax.set_yticks(yticks, clusters + 1)
+    ax.set_ylabel('Cluster')
+    ax.set_xlabel('Silhouette coefficient')
     plt.tight_layout()
     plt.show()
 

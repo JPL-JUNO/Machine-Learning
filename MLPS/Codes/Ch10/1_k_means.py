@@ -5,7 +5,13 @@
 @CreatedTime: 2023-06-26 09:55:02
 """
 
+import sys
+sys.path.append('./')
+sys.path.append('../')
+from utilsML.visualize import plot_silhouette_coefficients
+from utilsML.visualize import plot_k_means
 from sklearn.datasets import make_blobs
+
 X, y = make_blobs(n_samples=150, n_features=2,
                   centers=3, cluster_std=.5, shuffle=True, random_state=0)
 import matplotlib.pyplot as plt
@@ -43,15 +49,26 @@ plt.show()
 
 km = KMeans(n_clusters=3,
             init='k-means++', n_init=10, max_iter=300, tol=1e-4, random_state=0)
-y_km = km.fit_transform(X)
+y_km = km.fit_predict(X)
 
 import numpy as np
+from matplotlib import cm
 from sklearn.metrics import silhouette_samples
 cluster_labels = np.unique(y_km)
 n_clusters = cluster_labels.shape[0]
 silhouette_vals = silhouette_samples(
     X, y_km, metric='euclidean'
 )
-y_ax_lower, y_ax_upper = 0, 0
-for i, c in enumerate(cluster_labels):
-    pass
+
+plot_silhouette_coefficients(cluster_labels, silhouette_vals, y_km)
+
+km = KMeans(n_clusters=2, init='k-means++', n_init=10, max_iter=300,
+            tol=1e-4, random_state=0)
+plot_k_means(X, km, centers=2)
+
+y_km = km.fit_predict(X)
+cluster_labels = np.unique(y_km)
+silhouette_vals = silhouette_samples(
+    X, y_km, metric='euclidean'
+)
+plot_silhouette_coefficients(cluster_labels, silhouette_vals, y_km)
