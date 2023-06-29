@@ -11,7 +11,12 @@ gvhdTib <- as_tibble(GvHD.control)
 gvhdScaled <- gvhdTib %>% scale()
 library(GGally)
 ggpairs(GvHD.control,
-    upper = list(continuous = "density"),
-    lower = list(continuous = wrap("points", size = .5)),
-    diag = list(continuous = "densityDiag")
+  upper = list(continuous = "density"),
+  lower = list(continuous = wrap("points", size = .5)),
+  diag = list(continuous = "densityDiag")
 ) + theme_bw()
+
+gvhdTask <- makeClusterTask(data = as.data.frame(gvhdScaled))
+listLearners('cluster')$class
+kMeans <- makeLearner('cluster.kmeans', 
+                      par.vals = list(iter.max=100, nstart=10))
