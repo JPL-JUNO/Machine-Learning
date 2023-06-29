@@ -3,20 +3,93 @@ The goal of clustering is to find a natural grouping in data so that items in th
 \section{Prototype-based clustering}
 Prototype-based clustering means that each cluster is represented by a prototype, which is usually either the \textbf{centroid} (average) of similar points with continuous features, or the \textbf{medoid} (the most representative or the point that minimizes the distance to all other points that belong to a particular cluster) in the case of categorical features.
 \subsection{k-means clustering}
-\begin{algorithm}
-    \caption{The k-means algorithm\label{kmeans}}
+K-means algorithms partition cases in a dataset into $k$ clusters, where $k$ is an integer defined by us. The clusters returned by k-means algorithms tend to be n-dimensionally spherical (where n is the number of dimensions of the feature space). This means the clusters tend to form a circle in two dimensions, a sphere in three dimensions, and a hypersphere in more than three dimensions. K-means clusters also tend to have a similar diameter. These are traits that may not be true of the underlying structure in the data.
 
+There are a number of k-means algorithms, but some commonly used ones are as follows:
+\begin{itemize}
+    \item  Lloyd algorithm (also called Lloyd-Forgy algorithm)
+    \item MacQueen algorithm
+    \item Hartigan-Wong algorithm
+\end{itemize}
+\subsubsection*{Lloyd’s algorithm}
+\begin{algorithm}
+    \caption{Lloyd’s algorithm\label{Lloyd}}
     \Begin{
-        Randomly pick $k$ centroids from the examples as initial cluster centers\;
+        Select $k$\;
+        Randomly initialize $k$ centers in the feature space\;
         \Repeat{
-            the cluster assignments do not change or a user-defined tolerance or maximum number of iterations is reached
+            no cases change clusters or a maximum number of iterations is reached
         }{
-            Assign each example to the nearest centroid, $\mu^{(i)}, j \in \{1,\dots, k\}$\;
-            Move the centroids to the center of the examples that were assigned to it\;}
+            \ForEach{case(sample)}{
+                Calculate the distance between the case and each center\;
+                Assign the case to the cluster of the nearest centroid\;
+                Place each center at the mean of the cases assigned to its cluster\;
+            }
+        }
     }
 \end{algorithm}
-\subsection{k-means++}
 
+\subsubsection*{MacQueen’s algorithm}
+MacQueen’s algorithm is extremely similar to Lloyd’s algorithm, varying just subtly in when the centroids get updated. Lloyd’s algorithm is called a \textit{batch} or \textit{offline} algorithm, meaning it updates the centroids together at the end of an iteration. MacQueen’s algorithm, on the other hand, updates the centroids each time a case changes clusters and once the algorithm has passed through all the cases in the data.
+\begin{algorithm}
+    \caption{MacQueen’s algorithm\label{MacQueen}}
+    \Begin{
+        Select $k$\;
+        Randomly initialize $k$ centers in the feature space\;
+        Assign each case to the cluster of its nearest center\;
+        Place each center at the mean of the cases assigned to its cluster\;
+        \Repeat{
+            no cases change clusters
+        }{
+            \ForEach{case(sample)}{
+                Calculate the distance between the case and each centroid\;
+                Assign the case to the cluster of the nearest centroid\;
+                \If{the case changed clusters}{
+                    update the position of the new and old centroids.
+                }
+            }
+        }
+    }
+\end{algorithm}
+\subsubsection*{Hartigan-Wong algorithm}
+The third k-means algorithm is a little different from the Lloyd and MacQueen algorithms. The Hartigan-Wong algorithm starts by initializing k random centers and assigning each case to the cluster of its nearest center, just as we saw in the other two algorithms. Here’s the different bit: for each case in the dataset, the algorithm calculates the sum of squared error of that case’s current cluster if that case was removed, and the sum of squared error of each of the other clusters if that case was included in those clusters.
+\begin{algorithm}
+    \caption{Hartigan-Wong algorithm\label{Hartigan}}
+    \Begin{
+        Select $k$\;
+        Randomly initialize $k$ centers in the feature space\;
+        Assign each case to the cluster of its nearest center\;
+        Place each center at the mean of the cases assigned to its cluster\;
+        \Repeat{
+            no cases change clusters
+        }{
+            \ForEach{case(sample)}{
+                Calculate the sum of squared error for its cluster, omitting the case under consideration\;
+                Calculate the sum of squared error for the other clusters, as if that case were included.\;
+                Assign the case to the cluster with the smallest sum of squared error\;
+                \If{the case changed clusters}{
+                    update the position of the new and old centroids.
+                }
+            }
+        }
+    }
+\end{algorithm}
+
+The Hartigan-Wong algorithm tends to find a better clustering structure than either the Lloyd or MacQueen algorithms, although we are always subject to the “no free lunch” theorem. Hartigan-Wong is also more computationally expensive than the other two algorithms, so it will be considerably slower for large datasets.
+
+% \begin{algorithm}
+%     \caption{The k-means algorithm\label{kmeans}}
+%     \Begin{
+%         Randomly pick $k$ centroids from the examples as initial cluster centers\;
+%         \Repeat{
+%             the cluster assignments do not change or a user-defined tolerance or maximum number of iterations is reached
+%         }{
+%             Assign each example to the nearest centroid, $\mu^{(i)}, j \in \{1,\dots, k\}$\;
+%             Move the centroids to the center of the examples that were assigned to it\;}
+%     }
+% \end{algorithm}
+
+\subsection{k-means++}
 \begin{algorithm}
     \caption{The k-means++ algorithm\label{kmeans++}}
     \Begin{
