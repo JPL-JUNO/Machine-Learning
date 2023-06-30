@@ -175,5 +175,13 @@ def plot_silhouette_coefficients(clusters, silhouette_vals, y_km):
     plt.show()
 
 
+def plot_digit_number(nrows: int = 2, ncols: int = 5, sharex: bool = True, sharey: bool = True):
+    pass
+    fig, axes = plt.subplots(nrows, ncols, sharex, sharey)
+    for i, ax in enumerate(axes.ravel()):
+        img = X[y == i][0].reshape(28, 28)
+    pass
+
+
 if __name__ == '__main__':
     pass
