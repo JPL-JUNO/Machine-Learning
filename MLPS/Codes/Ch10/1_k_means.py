@@ -33,7 +33,7 @@ print(f'Distortion: {km.inertia_:.2f}')
 
 distortions = []
 num = 11
-for i in range(1, 11):
+for i in range(1, num):
     km = KMeans(n_clusters=i,
                 init='k-means++', n_init=10, max_iter=300,
                 random_state=0)
@@ -52,7 +52,6 @@ km = KMeans(n_clusters=3,
 y_km = km.fit_predict(X)
 
 import numpy as np
-from matplotlib import cm
 from sklearn.metrics import silhouette_samples
 cluster_labels = np.unique(y_km)
 n_clusters = cluster_labels.shape[0]
