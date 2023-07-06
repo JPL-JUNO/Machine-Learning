@@ -53,3 +53,46 @@ for epoch in range(num_epochs):
         bias.grad.zero_()
     if epoch % log_epochs == 0:
         print(f'Epoch {epoch} Loss {loss.item():.4f}')
+
+
+print('Final Parameters:', weight.item(), bias.item())
+X_test = np.linspace(0, 9, num=100, dtype='float32').reshape(-1, 1)
+X_test_norm = (X_test - np.mean(X_test)) / np.std(X_train)
+X_test_norm = torch.from_numpy(X_test_norm)
+y_pred = model(X_test_norm).detach().numpy()
+fig = plt.figure(figsize=(13, 5))
+ax = fig.add_subplot(1, 2, 1)
+ax.plot(X_train_norm, y_train, 'o', markersize=10)
+ax.plot(X_test_norm, y_pred, '--', lw=3)
+plt.legend(['Training examples', 'Linear reg.'], fontsize=15)
+ax.set_xlabel('x', size=15)
+ax.set_ylabel('y', size=15)
+ax.tick_params(axis='both', which='major', labelsize=15)
+plt.show()
+
+
+# Model training via the torch.nn and torch.optim modules
+import torch.nn as nn
+loss_fn = nn.MSELoss(reduction='mean')
+input_size = 1
+output_size = 1
+model = nn.Linear(input_size, output_size)
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+
+
+for epoch in range(num_epochs):
+    for x_batch, y_batch in train_dl:
+        # Generate predictions
+        pred = model(x_batch)[:, 0]
+        # Calculate loss
+        loss = loss_fn(pred, y_batch)
+        # Compute gradients
+        loss.backward()
+        # Update parameters using gradients
+        optimizer.step()
+        # Reset the gradients to zero
+        optimizer.zero_grad()
+    if epoch % log_epochs == 0:
+        print(f'Epoch {epoch} Loss {loss.item():.4f}')
+
+print(f'Final Parameters:', model.weight.item(), model.bias.item())
