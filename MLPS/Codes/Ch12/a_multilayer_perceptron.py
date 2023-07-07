@@ -15,4 +15,11 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=1. / 3, random_state=1)
 import torch
 import numpy as np
+from torch.utils.data import TensorDataset, DataLoader
 X_train_norm = (X_train - np.mean(X_train, axis=0)) / np.std(X_train, axis=0)
+X_train_norm = torch.from_numpy(X_train_norm).float()
+y_train = torch.from_numpy(y_train)
+train_ds = TensorDataset(X_train_norm, y_train)
+torch.manual_seed(1)
+batch_size = 2
+train_dl = DataLoader(train_ds, batch_size, shuffle=True)
