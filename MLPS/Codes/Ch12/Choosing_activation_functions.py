@@ -91,3 +91,5 @@ print(torch.sigmoid(torch.from_numpy(z)))
 # nn.Sigmoid()(x), which we used earlier. torch.nn.Sigmoid is a class to which you
 # can pass in parameters to construct an object in order to control the behavior. In contrast,
 # torch.sigmoid is a function.
+
+print(torch.relu(torch.from_numpy(z)))
