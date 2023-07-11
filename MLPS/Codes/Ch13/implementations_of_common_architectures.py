@@ -61,7 +61,7 @@ train_dl = DataLoader(train_ds, batch_size, shuffle=True)
 torch.manual_seed(1)
 num_epochs = 200
 
-# TODO：函数train bug, 训练的权重似乎没有改变，存在问题
+# BUG, 训练的权重似乎没有改变，存在问题
 
 
 def train(model, num_epochs, train_dl, x_valid, y_valid):
