@@ -46,6 +46,12 @@ plt.xlabel(r'$x_1$', size=15)
 plt.ylabel(r'$x_2$', size=15)
 plt.show()
 
+from torch.utils.data import DataLoader, TensorDataset
+train_ds = TensorDataset(x_train, y_train)
+batch_size = 2
+torch.manual_seed(1)
+train_dl = DataLoader(train_ds, batch_size, shuffle=True)
+
 model = nn.Sequential(
     nn.Linear(2, 1),
     nn.Sigmoid()
@@ -53,11 +59,7 @@ model = nn.Sequential(
 print(model)
 loss_fn = nn.BCELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=.001)
-from torch.utils.data import DataLoader, TensorDataset
-train_ds = TensorDataset(x_train, y_train)
-batch_size = 2
-torch.manual_seed(1)
-train_dl = DataLoader(train_ds, batch_size, shuffle=True)
+
 torch.manual_seed(1)
 num_epochs = 200
 
@@ -78,9 +80,11 @@ def train(model, num_epochs, train_dl, x_valid, y_valid):
             optimizer.zero_grad()
             loss_hist_train[epoch] += loss.item()
             is_correct = ((pred > .5).float() == y_batch).float()
-            accuracy_hist_train[epoch] += is_correct.sum()
-        loss_hist_train[epoch] /= n_train
+            accuracy_hist_train[epoch] += is_correct.mean()
+
+        loss_hist_train[epoch] /= n_train / batch_size
         accuracy_hist_train[epoch] /= n_train / batch_size
+
         pred = model(x_valid)[:, 0]
         loss = loss_fn(pred, y_valid)
         loss_hist_valid[epoch] = loss.item()
@@ -88,8 +92,6 @@ def train(model, num_epochs, train_dl, x_valid, y_valid):
         accuracy_hist_valid[epoch] += is_correct.mean()
     return loss_hist_train, loss_hist_valid, accuracy_hist_train, accuracy_hist_valid
 
-
-history = train(model, num_epochs, train_dl, x_valid, y_valid)
 
 history = train(model, num_epochs, train_dl, x_valid, y_valid)
 
