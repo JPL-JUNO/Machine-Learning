@@ -47,6 +47,14 @@ class MyModule(nn.Module):
         self.w2 = torch.empty(1, 2, requires_grad=True)
         nn.init.xavier_normal_(self.w2)
 
+    def predict(self, x):
+        """实现预测功能
+        return 0 or 1 for sample
+        """
+        x = torch.tensor(x, dtype=torch.float32)
+        pred = self.forward(x)[:, 0]
+        return (pred > .5).float()
+
 
 w = torch.tensor(1.0, requires_grad=True)
 b = torch.tensor(.5, requires_grad=True)
