@@ -13,9 +13,7 @@ MLPS/Codes/Ch08/movie_data.csv
 *.Rproj
 *.Rhistory
 *.Rdata
-MLPS/Codes/Ch12/MNIST/raw/t10k-images-idx3-ubyte
-MLPS/Codes/Ch12/MNIST/raw/t10k-labels-idx1-ubyte
-MLPS/Codes/Ch12/MNIST/raw/train-labels-idx1-ubyte
-MLPS/Codes/Ch12/MNIST/raw/train-images-idx3-ubyte
+MLPS/Codes/Ch12/MNIST/
 MLPS/Codes/Ch12/celeba
 *.pt
+MLPS/Codes/Ch13/MNIST/
