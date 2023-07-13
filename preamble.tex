@@ -1,6 +1,8 @@
 \usepackage{mathptmx}
 \usepackage{amsmath, amssymb}
-\usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage{bm}
+\DeclareMathOperator*{\argmin}{argmin}
+\usepackage[ruled,linesnumbered,vlined]{algorithm2e}
 \usepackage{tabularx}
 \usepackage{xcolor}
 \definecolor{SWJTU}{HTML}{025483}
@@ -22,3 +24,10 @@
     basicstyle=\ttfamily,
 }
 \usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=SWJTU,
+    filecolor=SWJTU,
+    urlcolor=SWJTU,
+    citecolor=SWJTU,
+}

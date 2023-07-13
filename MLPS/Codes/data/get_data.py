@@ -27,6 +27,16 @@ class DataLoader:
         self.y = self.data.iloc[:, 0].values
         return self.data
 
+    def get_wdbc(self) -> tuple[ndarray, ndarray]:
+        try:
+            self.data = pd.read_csv('../data/wdbc.txt', header=None)
+        except:
+            self.data = pd.read_csv(
+                'https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data', header=None)
+        self.X = self.data.loc[:, 2:].values
+        self.y = self.data.loc[:, 1].values
+        return self.X, self.y
+
     def standardize(self):
         pass
 

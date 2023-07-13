@@ -1,0 +1,12 @@
+\chapter{\label{}}
+\section{silhouette coefficient}
+To calculate the silhouette coefficient of a single example in our dataset, we can
+apply the following three steps:
+\begin{enumerate}
+    \item Calculate the cluster cohesion, $a^{(i)}$, as the average distance between an example, $\bm{x}^{(i)}$, and all other points in the same cluster.
+    \item Calculate the cluster separation, $b^(i)$, from the next closest cluster as the average distance between the example, $\bm{x}^{(i)}$, and all examples in the nearest cluster.
+    \item Calculate the silhouette, $s^{(i)}$, as the difference between cluster cohesion and separation divided by the greater of the two, as shown here:
+          \begin{equation}
+              s^{(i)}=\frac{b^{(i)}-a^{(i)}}{\max\{b^{(i)},a^{(i)}\}}
+          \end{equation}
+\end{enumerate}

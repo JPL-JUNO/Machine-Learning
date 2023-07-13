@@ -1,0 +1,70 @@
+\chapter{Predicting Continuous Target Variables with Regression Analysis\label{Ch09}}
+\section{Fitting a robust regression model using RANSAC}
+\begin{algorithm}
+    \Begin{
+        \Repeat{the performance meets a certain user-defined threshold or if a fixed number of iterations was reached}{
+            Select a random number of examples to be inliers and fit the model\;
+            Test all other data points against the fitted model and add those points that fall within a user-given tolerance to the inliers\;
+            Refit the model using all inliers\;
+            Estimate the error of the fitted model versus the inliers\;
+        }
+    }
+    \caption{RANdom SAmple Consensus (RANSAC) algorithm}
+\end{algorithm}
+
+\section{Evaluating the performance of linear regression models}
+Residual plots are a commonly used graphical tool for diagnosing regression models. They can help to detect nonlinearity and outliers and check whether the errors are randomly distributed.
+
+Another useful quantitative measure of a model's performance is the mean squared error (MSE) that is often used to simplify the loss derivative in gradient descent:
+\begin{equation}
+    MSE=\frac{1}{n}\sum_{i=1}^{n}(y^{(i)}-\hat{y}^{(i)})^2
+\end{equation}
+
+Note that it can be more intuitive to show the error on the original unit scale, which is why we may choose to compute the square root of the MSE, called root mean squared error, or the mean absolute error (MAE), which emphasizes incorrect prediction slightly less:
+\begin{equation}
+    MAE=\frac{1}{n}\sum_{i=1}^{m}|y^{(i)}-\hat{y}^{(i)}|
+\end{equation}
+When we use the MAE or MSE for comparing models, we need to be aware that these are unbounded in contrast to the classification accuracy, for example. In other words, the interpretations of the MAE and MSE depend on the dataset and feature scaling.
+
+Thus, it may sometimes be more useful to report the coefficient of determination ($R^2$), which can be understood as a standardized version of the MSE, for better interpretability of the model's performance. Or, in other words, $R^2$ is the fraction of response variance that is captured by the model. The $R^2$value is defined as:
+\begin{equation}
+    \begin{aligned}
+        R^2 & =1-\frac{SSE}{SST}                       \\
+        SSE & =\sum_{i=1}^{n}(y^{(i)}-\hat{y}^{(i)})^2 \\
+        SST & =\sum_{i=1}^{n}(y^{(i)}-\mu_y)^2         \\
+    \end{aligned}
+\end{equation}
+Now, let’s briefly show that $R^2$ is indeed just a rescaled version of the MSE:
+\begin{equation}
+    \begin{aligned}
+        R^2 & =1-\frac{SSE}{SST}                                                                                       \\
+            & =1-\frac{\frac{1}{n}\sum_{i=1}^{n}(y^{(i)}-\hat{y}^{(i)})^2}{\frac{1}{n}\sum_{i=1}^{n}(y^{(i)}-\mu_y)^2} \\
+            & =1-\frac{MSE}{Var(y)}
+    \end{aligned}
+\end{equation}
+
+For the training dataset, $R^2$ is bounded between 0 and 1, \textbf{but it can become negative for the test dataset}. A negative $R^2$ means that the regression model fits the data worse than a horizontal line representing the sample mean. (In practice, this often happens in the case of extreme overfitting, or if we forget to scale the test set in the same manner we scaled the training set.) If $R^2 = 1$, the model fits the data perfectly with a corresponding $MSE = 0$.
+
+\section{Using regularized methods for regression}
+The most popular approaches to regularized linear regression are the so-called ridge regression, least absolute shrinkage and selection operator (LASSO), and elastic net.
+
+Ridge regression is an L2 penalized model where we simply add the squared sum of the weights to the MSE loss function:
+\begin{equation}
+    \begin{aligned}
+        L(\textbf{w})_{Ridge} & =\sum_{i=1}^{n}(y^{(i)}-\hat{y}^{(i)})^2+\lambda||\textbf{w}||^2_2 \\
+        ||\textbf{w}||^2_2    & =\sum_{j=1}^{m}w_j^2                                               \\
+    \end{aligned}
+\end{equation}
+
+An alternative approach that can lead to sparse models is LASSO. Depending on the regularization strength, certain weights can become zero, which also makes LASSO useful as a supervised feature selection technique:
+\begin{equation}
+    \begin{aligned}
+        L(\textbf{w})_{Lasso} & =\sum_{i=1}^{n}(y^{(i)}-\hat{y}^{(i)})^2+\lambda||\textbf{w}||_1 \\
+        ||\textbf{w}||_1      & =\sum_{j=1}^{m}|w_j|                                             \\
+    \end{aligned}
+\end{equation}
+
+A compromise between ridge regression and LASSO is elastic net, which has an L1 penalty to generate sparsity and an L2 penalty such that it can be used for selecting more than $n$ features if $m > n$:
+\begin{equation}
+    L(\textbf{w})_{Elastic~Net}=\sum_{i=1}^{n}(y^{(i)}-\hat{y}^{(i)})^2+\lambda_2||\textbf{w}||^2_2+\lambda_1||\textbf{w}||_1
+\end{equation}

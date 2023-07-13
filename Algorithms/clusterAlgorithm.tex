@@ -1,0 +1,139 @@
+\chapter{Clustering}
+The goal of clustering is to find a natural grouping in data so that items in the same cluster are more similar to each other than to those from different clusters.
+\section{Prototype-based clustering}
+Prototype-based clustering means that each cluster is represented by a prototype, which is usually either the \textbf{centroid} (average) of similar points with continuous features, or the \textbf{medoid} (the most representative or the point that minimizes the distance to all other points that belong to a particular cluster) in the case of categorical features.
+\subsection{k-means clustering}
+K-means algorithms partition cases in a dataset into $k$ clusters, where $k$ is an integer defined by us. The clusters returned by k-means algorithms tend to be n-dimensionally spherical (where n is the number of dimensions of the feature space). This means the clusters tend to form a circle in two dimensions, a sphere in three dimensions, and a hypersphere in more than three dimensions. K-means clusters also tend to have a similar diameter. These are traits that may not be true of the underlying structure in the data.
+
+There are a number of k-means algorithms, but some commonly used ones are as follows:
+\begin{itemize}
+    \item  Lloyd algorithm (also called Lloyd-Forgy algorithm)
+    \item MacQueen algorithm
+    \item Hartigan-Wong algorithm
+\end{itemize}
+\subsubsection*{Lloyd’s algorithm}
+\begin{algorithm}
+    \caption{Lloyd’s algorithm\label{Lloyd}}
+    \Begin{
+        Select $k$\;
+        Randomly initialize $k$ centers in the feature space\;
+        \Repeat{
+            no cases change clusters or a maximum number of iterations is reached
+        }{
+            \ForEach{case(sample)}{
+                Calculate the distance between the case and each center\;
+                Assign the case to the cluster of the nearest centroid\;
+                Place each center at the mean of the cases assigned to its cluster\;
+            }
+        }
+    }
+\end{algorithm}
+
+\subsubsection*{MacQueen’s algorithm}
+MacQueen’s algorithm is extremely similar to Lloyd’s algorithm, varying just subtly in when the centroids get updated. Lloyd’s algorithm is called a \textit{batch} or \textit{offline} algorithm, meaning it updates the centroids together at the end of an iteration. MacQueen’s algorithm, on the other hand, updates the centroids each time a case changes clusters and once the algorithm has passed through all the cases in the data.
+\begin{algorithm}
+    \caption{MacQueen’s algorithm\label{MacQueen}}
+    \Begin{
+        Select $k$\;
+        Randomly initialize $k$ centers in the feature space\;
+        Assign each case to the cluster of its nearest center\;
+        Place each center at the mean of the cases assigned to its cluster\;
+        \Repeat{
+            no cases change clusters
+        }{
+            \ForEach{case(sample)}{
+                Calculate the distance between the case and each centroid\;
+                Assign the case to the cluster of the nearest centroid\;
+                \If{the case changed clusters}{
+                    update the position of the new and old centroids.
+                }
+            }
+        }
+    }
+\end{algorithm}
+\subsubsection*{Hartigan-Wong algorithm}
+The third k-means algorithm is a little different from the Lloyd and MacQueen algorithms. The Hartigan-Wong algorithm starts by initializing k random centers and assigning each case to the cluster of its nearest center, just as we saw in the other two algorithms. Here’s the different bit: for each case in the dataset, the algorithm calculates the sum of squared error of that case’s current cluster if that case was removed, and the sum of squared error of each of the other clusters if that case was included in those clusters.
+\begin{algorithm}
+    \caption{Hartigan-Wong algorithm\label{Hartigan}}
+    \Begin{
+        Select $k$\;
+        Randomly initialize $k$ centers in the feature space\;
+        Assign each case to the cluster of its nearest center\;
+        Place each center at the mean of the cases assigned to its cluster\;
+        \Repeat{
+            no cases change clusters
+        }{
+            \ForEach{case(sample)}{
+                Calculate the sum of squared error for its cluster, omitting the case under consideration\;
+                Calculate the sum of squared error for the other clusters, as if that case were included.\;
+                Assign the case to the cluster with the smallest sum of squared error\;
+                \If{the case changed clusters}{
+                    update the position of the new and old centroids.
+                }
+            }
+        }
+    }
+\end{algorithm}
+
+The Hartigan-Wong algorithm tends to find a better clustering structure than either the Lloyd or MacQueen algorithms, although we are always subject to the “no free lunch” theorem. Hartigan-Wong is also more computationally expensive than the other two algorithms, so it will be considerably slower for large datasets.
+
+% \begin{algorithm}
+%     \caption{The k-means algorithm\label{kmeans}}
+%     \Begin{
+%         Randomly pick $k$ centroids from the examples as initial cluster centers\;
+%         \Repeat{
+%             the cluster assignments do not change or a user-defined tolerance or maximum number of iterations is reached
+%         }{
+%             Assign each example to the nearest centroid, $\mu^{(i)}, j \in \{1,\dots, k\}$\;
+%             Move the centroids to the center of the examples that were assigned to it\;}
+%     }
+% \end{algorithm}
+
+\subsection{k-means++}
+\begin{algorithm}
+    \caption{The k-means++ algorithm\label{kmeans++}}
+    \Begin{
+        Initialize an empty set, $M$, to store the $k$ centroids being selected\;
+        Randomly choose the first centroid from the input examples and  $M \leftarrow \mu^{(j)}$\;
+        \Repeat{k centroids are chosen}{
+            For each example, $\bm{x}^{(i)}$, that is not in $M$, find the minimum squared distance, $d(x^{(i)}, M)^2$, to any of the centroids in $M$\;
+            To randomly select the next centroid, $\mu^{(p)}$, from a weighted probability distribution equal to $\frac{d(\mu^{(p)},\textbf{M})^2}{\sum_id(x^{(i)},\textbf{M})^2}$\;
+        }
+        Proceed with the classic k-means algorithm\;
+    }
+\end{algorithm}
+\subsection{Hard versus soft clustering}
+\textbf{Hard clustering} describes a family of algorithms where each example in a dataset is assigned to exactly one cluster, as in the \autoref{kmeans} and \autoref{kmeans++}. In contrast, algorithms for \textbf{soft clustering} (sometimes also called \textbf{fuzzy clustering}) assign an example to one or more clusters. A popular example of soft clustering is the \textbf{fuzzy C-means (FCM)} algorithm (also called \textbf{soft k-means} or \textbf{fuzzy k-means}).
+\subsection{Fuzzy C-means}
+\begin{algorithm}
+    \caption{The FCM algorithm\label{fcm}}
+    \Begin{
+        Specify the number of k centroids and randomly assign the cluster memberships for each point\;
+        \Repeat{the membership coefficients do not change or a user-defined tolerance or maximum number of iterations is reached
+        }{
+            Compute the cluster centroids, $\bm{\mu}^{(i)}, j \in \{1,\dots, k\}$\;
+            Update the cluster memberships for each point\;}
+    }
+\end{algorithm}
+
+The objective function of FCM—we abbreviate it as $J_m$:
+\begin{equation}
+    J_m=\sum_{i=1}^{n}\sum_{j=1}^{k}w^{(i,j)^m}||\bm{x}^{(i)}-\bm{\mu}^{(j)}||_2^2
+\end{equation}
+
+We added an additional exponent to $w^{(i,j)}$; the exponent $m$, any number greater than or equal to one (typically $m = 2$), is the so-called \textbf{fuzziness coefficient} (or simply \textbf{fuzzifier}), which controls the degree of fuzziness.
+
+The larger the value of m, the smaller the cluster membership, $w^{(i,j)}$, becomes, which leads to fuzzier clusters. The cluster membership probability itself is calculated as follows:
+\begin{equation}
+    w^{(i,j)}=\left[\sum_{c=1}^{k}\left(\frac{||\bm{x}^{(i)}-\bm{\mu}^{(j)}||_2}{||\bm{x}^{(i)}-\bm{\mu}^{(c)}||_2}\right)^{\frac{2}{m-1}}\right]^{-1}
+\end{equation}
+The center, $\bm{\mu}^{(j)}$ , of a cluster itself is calculated as the mean of all examples weighted by the degree to
+which each example belongs to that cluster ($w^{(i,j)^m}$):
+\begin{equation}
+    \bm{\mu}^{(j)}=\frac{\sum_{i=1}^{n}w^{(i,j)^m}\bm{x}^{(i)}}{\sum_{i=1}^{n}w^{(i,j)^m}}
+\end{equation}
+
+\section{Agglomerative hierarchical clustering}
+\section{Density-based clustering}
+\subsection{Density-based spatial clustering of applications with noise}
+\section{Graph-based clustering}

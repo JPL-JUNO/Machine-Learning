@@ -1,0 +1,16 @@
+\chapter{Implementing a Multilayer Artificial Neural Network from Scratch\label{Ch11}}
+\section{Modeling complex functions with artificial neural networks}
+\subsection{Introducing the multilayer neural network architecture}
+\figures{fig11-2}{A two-layer MLP. We will use the $in$ superscript for the input features, the $h$ superscript for the hidden layer, and the $out$ superscript for the output layer. For instance, $x^{(in)}_i$ refers to the $i$th input feature value, $a^{(h)}_i$ refers to the $i$th unit in the hidden layer, and $a^{(out)}_i$ refers to the $i$th unit in the output layer. Note that the $b$’s denote the bias units. In fact, $b^{(h)}$ and $b^{(out)}$ are vectors with the number of elements being equal to the number of nodes in the layer they correspond to. For example, $b^{(h)}$ stores d bias units, where $d$ is the number of nodes in the hidden layer. The connection between the $k$th unit in layer $l$ to the $j$th unit in layer $l + 1$ will be written as $w_{j,k}^{(l)}$. }
+\begin{tcolorbox}[title=Adding additional hidden layers]
+    We can add any number of hidden layers to the MLP to create deeper network architectures. Practically, we can think of the number of layers and units in an NN as additional hyperparameters that we want to optimize for a given problem task using the cross-validation technique,
+\end{tcolorbox}
+\subsection{Activating a neural network via forward propagation}
+Furthermore, we can generalize this computation to all $n$ examples in the training dataset:
+\begin{equation}
+    \begin{aligned}
+        \bm{Z}^{(h)} & =\bm{X}^{(in)}\bm{W}^{(h)T}+\bm{b}^{(h)} \\
+        \bm{A}^{(h)} & =  \sigma(\bm{Z}^{(h)})                  \\
+    \end{aligned}
+\end{equation}
+Here, $\bm{X}^{(in)}$ is now an $n\times m$ matrix, and the matrix multiplication will result in an $n\times d$ dimensional net input matrix, $\bm{Z}^{(h)}$. Finally, we apply the activation function $\sigma(\cdot)$ to each value in the net input matrix to get the $n\times d$ activation matrix in the next layer.

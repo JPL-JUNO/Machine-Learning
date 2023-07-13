@@ -1,0 +1,237 @@
+\chapter{Encoding Categorical Variables}
+Categorical variables are those whose values are selected from a group of categories or labels.  In some categorical variables, the labels have an intrinsic order. These are called ordinal categorical variables. Variables in which the categories do not have an intrinsic order are called nominal categorical variables。
+
+The values of categorical variables are often encoded as strings. To train mathematical or machine learning models, we need to transform those strings into numbers. The act of replacing strings with numbers is called categorical encoding. 
+
+\paragraph{补充：}数据的四个等级
+\begin{enumerate}
+    \item nominal level（定类等级）
+    \item ordinal level（定序等级）
+    \item interval level（定距等级）
+    \item ratio level（定比等级）
+\end{enumerate}
+
+The values of categorical variables are often encoded as strings. To train mathematical or machine learning models, we need to transform those strings into numbers. The act of replacing strings with numbers is called categorical encoding. 
+
+\section{Technical requirements}
+We will also use the open-source \href{https://contrib.scikit-learn.org/category_encoders/}{Category Encoders} Python library, which can be installed using pip:
+\begin{pyc}
+pip install category_encoders
+\end{pyc}
+
+We will also use the Credit Approval dataset(\autoref{credit_approval_uci} \nameref{credit_approval_uci}).
+
+\begin{pyc}
+import random
+import numpy as np
+import pandas as pd
+
+data = pd.read_csv('../data/credit_approval_uci.csv')
+
+cat_cols = [
+    c for c in data.columns if data[c].dtypes == 'O'
+]
+num_cols = [
+    c for c in data.columns if data[c].dtypes != 'O'
+]
+
+data[num_cols] = data[num_cols].fillna(0)
+data[cat_cols] = data[cat_cols].fillna('Missing')
+
+if(not data.isnull().any().any()):
+    print('not exist missing value')
+\end{pyc}
+\section{Creating binary variables through one-hot encoding}
+In one-hot encoding, we represent a categorical variable as a group of binary variables, where each binary variable represents one category. The binary variable takes a value of 1 if the category is present in an observation, or 0 otherwise.
+
+\textbf{A categorical variable with $k$ unique categories can be encoded using $k-1$ binary variables.} For the Color variable, which has three categories ($k=3$; red, 
+blue, and green), we need to create two ($k - 1 = 2$) binary variables to capture all the information so that the following occurs:
+\begin{itemize}
+    \item If the observation is red, it will be captured by the red variable (red = 1, blue = 0).
+    \item If the observation is blue, it will be captured by the blue variable (red = 0, blue = 1).
+    \item If the observation is green, it will be captured by the combination of red and blue (red = 0, 
+    blue = 0).    
+\end{itemize}
+
+Encoding into $k-1$ binary variables is well-suited for linear models. \textbf{There are a few occasions in which we may prefer to encode the categorical variables with $k$ binary variables:}
+
+\begin{itemize}
+    \item When training decision trees since they do not evaluate the entire feature space at the same time.
+    \item When selecting features recursively.
+    \item When determining the importance of each category within a variable.
+\end{itemize}
+\subsection{How to do it...}
+In this recipe, we will compare the one-hot encoding implementations of pandas, scikit-learn, Feature-engine, and Category Encoders.
+
+\begin{pyc}
+import pandas as pd
+from sklearn.model_selection import train_test_split
+
+data = pd.read_csv('../data/credit_approval_uci.csv')
+\end{pyc}
+
+
+\begin{pyc}
+# Let’s do one-hot encoding using pandas
+X_train, X_test, y_train, y_test = train_test_split(
+    data.drop(labels=['target'], axis='columns'), data['target'],
+    test_size=.3,
+    random_state=0
+)
+
+X_train['A4'].unique()
+
+dummies = pd.get_dummies(X_train['A4'], drop_first=True)
+dummies.head()
+
+X_train_enc = pd.get_dummies(X_train, drop_first=True)
+X_test_enc = pd.get_dummies(X_test, drop_first=True)
+X_train_enc.head()
+
+X_train_enc.columns
+
+X_test_enc = pd.concat([X_test, X_test_enc], axis='columns')
+
+X_test_enc.drop(
+    labels=X_test_enc.select_dtypes(include='O').columns,
+    axis='columns',
+    inplace=True
+)
+\end{pyc}
+
+\begin{pyc}
+# Let’s do one-hot encoding using scikit-learn
+from sklearn.preprocessing import OneHotEncoder
+
+X_train, X_test, y_train, y_test = train_test_split(
+    data.drop(labels=['target'], axis='columns'), data['target'],
+    test_size=.3,
+    random_state=0
+)
+
+# handle_unknown='ignore'
+encoder = OneHotEncoder(drop='first', sparse=False)
+
+vars_categorical = X_train.select_dtypes(include='O').columns.to_list()
+
+encoder.fit(X_train[vars_categorical])
+
+encoder.categories_
+
+X_train_enc = encoder.transform(
+    X_train[vars_categorical]
+)
+
+X_test_enc = encoder.transform(
+    X_test[vars_categorical]
+)
+
+encoder.get_feature_names_out()
+
+X_test_enc = pd.DataFrame(X_test_enc)
+X_test_enc.columns = encoder.get_feature_names_out()
+
+X_test_enc.index = X_test.index
+
+X_test_enc = pd.concat([X_test, X_test_enc], axis='columns')
+
+X_test_enc.drop(
+    labels=X_test_enc.select_dtypes(include='O').columns,
+    axis='columns',
+    inplace=True
+)
+\end{pyc}
+
+
+\begin{pyc}
+# Let's perform one-hot encoding with Feature-engine
+from feature_engine.encoding import OneHotEncoder
+
+X_train, X_test, y_train, y_test = train_test_split(
+    data.drop(labels=['target'], axis='columns'), data['target'],
+    test_size=.3,
+    random_state=0
+)
+
+ohe_enc = OneHotEncoder(drop_last=True)
+ohe_enc.fit(X_train)
+
+ohe_enc.variables_
+
+ohe_enc.encoder_dict_
+
+X_train_enc = ohe_enc.transform(X_train)
+X_test_enc = ohe_enc.transform(X_test)
+
+ohe_enc.get_feature_names_out()
+\end{pyc}
+
+\section{Performing one-hot encoding of frequent categories}
+One-hot encoding represents each variable’s category with a binary variable. Hence, one-hot encoding of highly cardinal variables or datasets with multiple categorical features can expand the feature space dramatically. This, in turn, may increase the computational cost of using machine learning models or deteriorate their performance. To reduce the number of binary variables, we can perform one-hot encoding of the most frequent categories. One-hot encoding the top categories is equivalent to treating the remaining, less frequent categories as a single, unique category.
+
+\subsection{How to do it...}
+\begin{pyc}
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from feature_engine.encoding import OneHotEncoder
+\end{pyc}
+
+\begin{pyc}
+data = pd.read_csv('../data/credit_approval_uci.csv')
+X_train, X_test, y_train, y_test = train_test_split(
+    data.drop(labels=['target'], axis='columns'), data['target'],
+    test_size=.3,
+    random_state=0
+)
+\end{pyc}
+
+数据集必须在统计最大频数之前切割，避免出现数据泄露。
+
+The most frequent categories need to be determined in the train set. This is to avoid data leakage.
+
+\begin{pyc}
+X_train['A6'].unique()
+X_train['A6'].value_counts().sort_values(ascending=False).head(5)
+
+top_5 = [
+    x for x in X_train['A6'].value_counts().sort_values(
+        ascending=False).head(5).index
+]
+top_5
+
+for label in top_5:
+    X_train[f'A6_{label}'] = np.where(X_train['A6'] == label, 1, 0)
+    X_test[f'A6_{label}'] = np.where(X_test['A6'] == label, 1, 0)
+
+X_train[['A6']+ [f'A6_{label}' for label in top_5]].sample(10)
+\end{pyc}
+
+在下面代码执行之前，需要运行数据集切割的代码。
+
+\begin{pyc}
+ohe_enc = OneHotEncoder(top_categories=5, variables=['A6', 'A7'])
+ohe_enc.fit(X_train)
+X_train_enc = ohe_enc.transform(X_train)
+X_test_enc = ohe_enc.transform(X_test)
+\end{pyc}
+
+Feature-engine’s OneHotEncoder() will encode all categorical variables in the dataset by 
+default unless we specify the variables to encode.
+
+You can view the new binary variables in the DataFrame by executing \verb|X_train_enc.head()|. You 
+can also find the top five categories learned by the encoder by executing \verb|ohe_enc.encoder_dict_|.
+
+Feature-engine replaces the original variable with the binary ones returned by one-hot encoding, leaving the dataset ready to use in machine learning.
+
+\subsection{There's more...}
+This recipe is based on the winning solution of the KDD 2009 cup, \href{http://proceedings.mlr.press/v7/niculescu09/niculescu09.pdf}{Winning the KDD Cup Orange Challenge with Ensemble Selection}, where the authors limited one-hot encoding to the 10 most frequent categories of each variable.
+
+\section{Replacing categories with counts or the frequency of observations}
+In count or frequency encoding, we replace the categories with the count or the fraction of observations showing that category. These encoding methods, which capture the representation of each label in a dataset, are very popular in data science competitions. \textbf{The assumption is that the number of observations per category is somewhat predictive of the target.}
+
+\Tips{
+Note that if two different categories are present in the same number of observations, they will be replaced by the same value, which leads to information loss.
+
+如果两个不同的特征具有相同的频数或者counts，那么这两个特征将会具有相同的值，这将导致信息的减少。
+}
