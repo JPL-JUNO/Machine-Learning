@@ -91,59 +91,61 @@ def train(model, num_epochs, train_dl, x_valid, y_valid):
     return loss_hist_train, loss_hist_valid, accuracy_hist_train, accuracy_hist_valid
 
 
-history = train(model, num_epochs, train_dl, x_valid, y_valid)
+if __name__ == '__main__':
 
-fig = plt.figure(figsize=(16, 4))
-ax = fig.add_subplot(1, 2, 1)
-plt.plot(history[0], lw=4)
-plt.plot(history[1], lw=4)
-plt.legend(['Train loss', 'Validation loss'], fontsize=15)
-ax.set_xlabel('Epochs', size=15)
-ax = fig.add_subplot(1, 2, 2)
-plt.plot(history[2], lw=4)
-plt.plot(history[3], lw=4)
-plt.legend(['Train acc.', 'Validation acc.'], fontsize=15)
-ax.set_xlabel('Epochs', size=15)
-plt.show()
+    history = train(model, num_epochs, train_dl, x_valid, y_valid)
 
-model = nn.Sequential(
-    nn.Linear(2, 4),
-    nn.ReLU(),
-    nn.Linear(4, 4),
-    nn.ReLU(),
-    nn.Linear(4, 1),
-    nn.Sigmoid()
-)
-loss_fn = nn.BCELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=.015)
-print(model)
+    fig = plt.figure(figsize=(16, 4))
+    ax = fig.add_subplot(1, 2, 1)
+    plt.plot(history[0], lw=4)
+    plt.plot(history[1], lw=4)
+    plt.legend(['Train loss', 'Validation loss'], fontsize=15)
+    ax.set_xlabel('Epochs', size=15)
+    ax = fig.add_subplot(1, 2, 2)
+    plt.plot(history[2], lw=4)
+    plt.plot(history[3], lw=4)
+    plt.legend(['Train acc.', 'Validation acc.'], fontsize=15)
+    ax.set_xlabel('Epochs', size=15)
+    plt.show()
 
-history = train(model, num_epochs, train_dl, x_valid, y_valid)
+    model = nn.Sequential(
+        nn.Linear(2, 4),
+        nn.ReLU(),
+        nn.Linear(4, 4),
+        nn.ReLU(),
+        nn.Linear(4, 1),
+        nn.Sigmoid()
+    )
+    loss_fn = nn.BCELoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=.015)
+    print(model)
 
-from MyModule import MyModule
-model = MyModule()
-print(model)
-loss_fn = nn.BCELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=.015)
-history = train(model, num_epochs, train_dl, x_valid, y_valid)
+    history = train(model, num_epochs, train_dl, x_valid, y_valid)
 
-from mlxtend.plotting import plot_decision_regions
-fig = plt.figure(figsize=(16, 4))
-ax = fig.add_subplot(1, 3, 1)
-plt.plot(history[0], lw=4, label='Train loss')
-plt.plot(history[1], lw=4, label='Validation loss')
-plt.legend(fontsize=15)
-ax.set_xlabel('Epochs', size=15)
-ax = fig.add_subplot(1, 3, 2)
-plt.plot(history[2], lw=4, label='Train acc.')
-plt.plot(history[3], lw=4, label='Validation acc.')
-plt.legend(fontsize=15)
-ax = fig.add_subplot(1, 3, 3)
-plot_decision_regions(X=x_valid.numpy(),
-                      y=y_valid.numpy().astype(np.int64),
-                      clf=model)
-ax.set_xlabel(r'$x_1$', size=15)
-ax.xaxis.set_label_coords(1, -.025)
-ax.set_ylabel(r'$x_2$', size=15)
-ax.yaxis.set_label_coords(-.025, 1)
-plt.show()
+    from MyModule import MyModule
+    model = MyModule()
+    print(model)
+    loss_fn = nn.BCELoss()
+    optimizer = torch.optim.SGD(model.parameters(), lr=.015)
+    history = train(model, num_epochs, train_dl, x_valid, y_valid)
+
+    from mlxtend.plotting import plot_decision_regions
+    fig = plt.figure(figsize=(16, 4))
+    ax = fig.add_subplot(1, 3, 1)
+    plt.plot(history[0], lw=4, label='Train loss')
+    plt.plot(history[1], lw=4, label='Validation loss')
+    plt.legend(fontsize=15)
+    ax.set_xlabel('Epochs', size=15)
+    ax = fig.add_subplot(1, 3, 2)
+    plt.plot(history[2], lw=4, label='Train acc.')
+    plt.plot(history[3], lw=4, label='Validation acc.')
+    plt.legend(fontsize=15)
+    ax = fig.add_subplot(1, 3, 3)
+    plot_decision_regions(X=x_valid.numpy(),
+                          y=y_valid.numpy().astype(np.int64),
+                          clf=model)
+    ax.set_xlabel(r'$x_1$', size=15)
+    ax.xaxis.set_label_coords(1, -.025)
+    ax.set_ylabel(r'$x_2$', size=15)
+    ax.yaxis.set_label_coords(-.025, 1)
+    plt.show()

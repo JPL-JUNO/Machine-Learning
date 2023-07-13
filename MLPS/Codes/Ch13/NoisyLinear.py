@@ -1,5 +1,5 @@
 """
-@Description: Writing custom layers in PyTorch
+@Description: Noisy Linear
 @Author(s): Stephen CUI
 @LastEditor(s): Stephen CUI
 @CreatedTime: 2023-07-12 22:42:10
