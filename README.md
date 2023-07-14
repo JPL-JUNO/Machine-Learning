@@ -11,6 +11,7 @@
 | Machine Learning with PyTorch and Scikit-Learn | 😀     | reading 📑 |
 | Python Machine Learning By Example             | 😀     | reading 📑 |
 | Python Feature Engineering Cookbook            | 😀     | reading 📑 |
+| Machine Learning Bookcamp                      | 😀     | reading 📑 |
 
 ## Covers and Links to books you maybe have interest
 
