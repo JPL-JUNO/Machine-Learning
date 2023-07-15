@@ -1,0 +1,12 @@
+\chapter{Information Theory}
+\section{}
+\subsection{互信息, Mutual Information}
+离散变量的互信息
+
+在概率论和信息论中，两个随机变量的互信息（mutual Information，MI）度量了两个变量之间相互依赖的程度。具体来说，对于两个随机变量，MI是一个随机变量由于已知另一个随机变量而减少的“信息量”（单位通常为比特）。互信息的概念与随机变量的熵紧密相关，熵是信息论中的基本概念，它量化的是随机变量中所包含的“信息量”。
+
+离散随机变量X和Y的互信息可以计算为：
+\begin{equation}
+    I(X;Y)=\sum _{{y\in Y}}\sum _{{x\in X}}p(x,y)\log {\left({\frac  {p(x,y)}{p(x)\,p(y)}}\right)},
+\end{equation}
+其中 $p(x, y)$ 是$X$和$Y$的联合概率质量函数，而$p(x)$$p(y)$ 分别是$X$和$Y$的边缘概率质量函数。\href{https://en.wikipedia.org/wiki/Mutual_information}{Mutual Information}
