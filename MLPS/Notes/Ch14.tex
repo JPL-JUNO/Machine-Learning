@@ -1,0 +1,8 @@
+\chapter{Classifying Images with Deep Convolutional Neural Networks\label{Ch14}}
+\section{The building blocks of CNNs}
+\subsection{Discrete convolutions in one dimension}
+\subsubsection*{Determining the size of the convolution output}
+The output size of a convolution is determined by the total number of times that we shift the filter, $\bm{w}$, along the input vector. Let's assume that the input vector is of size $n$ and the filter is of size $m$. Then, the size of the output resulting from $\bm{y}=\bm{x}*\bm{w}$ , with padding $p$ and stride $s$, would be determined as follows:
+\begin{equation}
+    o=\Bigl\lfloor\frac{n+2p-m}{s}\Bigr\rfloor+1
+\end{equation}
