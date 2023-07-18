@@ -6,3 +6,17 @@ The output size of a convolution is determined by the total number of times that
 \begin{equation}
     o=\Bigl\lfloor\frac{n+2p-m}{s}\Bigr\rfloor+1
 \end{equation}
+
+\subsection{Subsampling layers}
+Subsampling is typically applied in two forms of pooling operations in CNNs: max-pooling and
+mean-pooling (also known as average-pooling). The pooling layer is usually denoted by $P_{n_1\times n_2}$.
+
+The advantage of pooling is twofold:
+\begin{itemize}
+    \item Pooling (max-pooling) introduces a local invariance. This means that small changes in a local neighborhood do not change the result of max-pooling. Therefore, it helps with generating features that are more robust to noise in the input data.
+    \item Pooling decreases the size of features, which results in higher computational efficiency. Furthermore, reducing the number of features may reduce the degree of overfitting as well.
+\end{itemize}
+
+\begin{tcolorbox}[title=Overlapping versus non-overlapping pooling]
+    Traditionally, pooling is assumed to be non-overlapping. Pooling is typically performed on non-overlapping neighborhoods, which can be done by setting the stride parameter equal to the pooling size. For example, a non-overlapping pooling layer, $P_{n_1\times n_2}$ , requires a stride parameter $s = (n_1, n_2)$. On the other hand, overlapping pooling occurs if the stride is smaller than the pooling size.
+\end{tcolorbox}
