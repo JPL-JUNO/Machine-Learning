@@ -64,4 +64,105 @@ optimizer = torch.optim.Adam(model.parameters(), lr=.001)
 
 
 def train(model, num_epochs, train_dl, valid_dl):
-    pass
+    loss_hist_train = [0] * num_epochs
+    accuracy_hist_train = [0] * num_epochs
+    loss_hist_valid = [0] * num_epochs
+    accuracy_hist_valid = [0] * num_epochs
+    for epoch in range(num_epochs):
+        # 在训练模型时添加 train()
+        model.train()
+        for x_batch, y_batch in train_dl:
+            pred = model(x_batch)
+            loss = loss_fn(pred, y_batch)
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+            loss_hist_train[epoch] += loss.item() * y_batch.size(0)
+            is_correct = (torch.argmax(pred, dim=1) == y_batch).float()
+            accuracy_hist_train[epoch] += is_correct.sum()
+        loss_hist_train[epoch] /= len(train_dl.dataset)
+        accuracy_hist_train[epoch] /= len(train_dl.dataset)
+        # 在模型评估时添加 eval()
+        model.eval()
+
+        with torch.no_grad():
+            for x_batch, y_batch in valid_dl:
+                pred = model(x_batch)
+                loss = loss_fn(pred, y_batch)
+                loss_hist_valid[epoch] += loss.item() * y_batch.size(0)
+                is_correct = (torch.argmax(pred, dim=1) == y_batch).float()
+                accuracy_hist_valid[epoch] += is_correct.sum()
+        loss_hist_valid[epoch] /= len(valid_dl.dataset)
+        accuracy_hist_valid[epoch] /= len(valid_dl.dataset)
+        print(
+            f'Epoch {(epoch + 1):2d} accuracy: {accuracy_hist_train[epoch]:.4f} val_accuracy: {accuracy_hist_valid[epoch]:.4f}')
+    return loss_hist_train, loss_hist_valid, accuracy_hist_train, accuracy_hist_valid
+
+
+torch.manual_seed(1)
+num_epochs = 20
+hist = train(model, num_epochs, train_dl, valid_dl)
+
+import matplotlib.pyplot as plt
+import numpy as np
+x_arr = np.arange(len(hist[0])) + 1
+fig = plt.figure(figsize=(12, 4))
+ax = fig.add_subplot(121)
+ax.plot(x_arr, hist[0], '-o', label='Train Loss')
+ax.plot(x_arr, hist[1], '-->', label='Validation Loss')
+ax.legend(fontsize=15)
+ax = fig.add_subplot(122)
+ax.plot(x_arr, hist[2], '-o', label='Train Acc.')
+ax.plot(x_arr, hist[3], '-->', label='Validation Acc.')
+ax.legend(fontsize=15)
+ax.set_xlabel('Epoch', size=15)
+ax.set_ylabel('Accuracy', size=15)
+plt.show()
+
+
+pred = model(mnist_test_dataset.data.unsqueeze(1) / 225.)
+is_correct = (torch.argmax(pred, dim=1) == mnist_test_dataset.targets).float()
+
+is_wrong = (torch.argmax(pred, dim=1) !=
+            mnist_test_dataset.targets).nonzero().squeeze()
+
+print(f'Test Accuracy: {is_correct.mean():.4f}')
+
+fig = plt.figure(figsize=(12, 4))
+for i in range(12):
+    ax = fig.add_subplot(2, 6, i + 1)
+    ax.set_xticks([])
+    # 第 i 个元素是一个元组，(data, target), the shape of data is 1*28*28
+    ax.set_yticks([])
+    img = mnist_test_dataset[i][0][0, :, :]
+    pred = model(img.unsqueeze(0).unsqueeze(1))
+    y_pred = torch.argmax(pred)
+    ax.imshow(img, cmap='gray_r')
+    ax.text(.9, .1, y_pred.item(), size=15, color='blue',
+            horizontalalignment='center',
+            verticalalignment='center',
+            transform=ax.transAxes)
+plt.show()
+
+# predict wrong examples
+fig = plt.figure(figsize=(12, 4))
+for i in range(12):
+    ax = fig.add_subplot(2, 6, i + 1)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    img = mnist_test_dataset[is_wrong[i]][0][0, ::]
+    # 这一行很奇怪，似乎得到不到和之前 pred 预测结果一样的
+    # pred = model(img.unsqueeze(0).unsqueeze(1))
+    y_pred = torch.argmax(pred[is_wrong[i]])
+    print(y_pred)
+    ax.imshow(img, cmap='gray_r')
+    ax.text(.9, .1, y_pred.item(), size=15, color='red',
+            horizontalalignment='center',
+            verticalalignment='center',
+            transform=ax.transAxes)
+    print(mnist_test_dataset[is_wrong[i]][1])
+    ax.text(.1, .9, mnist_test_dataset[is_wrong[i]][1],
+            size=15, color='green',
+            horizontalalignment='center',
+            verticalalignment='center',
+            transform=ax.transAxes)
