@@ -23,3 +23,15 @@ The advantage of pooling is twofold:
 \section{构建卷积神经网络}
 \subsection{处理多个输入通道}
 \figures{fig14-9}{Implementing a CNN}
+
+\section{使用卷积神经网络对人脸图像进行微笑分类}
+\subsection{图像转化和数据增广}
+以用五种不同类型的转换：
+\begin{itemize}
+    \item 用一个边界框剪裁图像 cropping an image to a bounding box
+    \item 水平翻转图像 flipping an image horizontally
+    \item 调整对比度 adjusting the contrast
+    \item 调整亮度 adjusting the brightness
+    \item 剪裁中心图像并将生成的图像调整为原始大小 center-cropping an image and resizing the resulting image back to
+          its original size
+\end{itemize}
