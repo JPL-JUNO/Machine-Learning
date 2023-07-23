@@ -1,0 +1,43 @@
+\chapter{用循环神经网络对序列数据建模\label{Ch15}}
+\section{用于序列数据建模的循环神经网络}
+\subsection{循环神经网络激活值计算}
+对于隐藏层，通过输入值的线性组合方式计算净输入 $\bm{z}_h$，即计算两个权重矩阵与对应输入向量的乘法的和，再加上偏置单元 $\bm{b}_h$：
+\begin{equation}
+    \bm{z}_h^{(t)} = \bm{W}_{xh}\bm{x}^{(t)}+\bm{W}_{hh}\bm{h}^{(t-1)}+\bm{b}_h
+\end{equation}
+然后，计算隐藏层在 $t$ 时刻的激活值：
+\begin{equation}
+    \bm{h}^{t}=\sigma_h(\bm{z}_h^{(t)})=\sigma_h(\bm{W}_{xh}\bm{x}^{(t)}+\bm{W}_{hh}\bm{h}^{(t-1)}+\bm{b}_h)
+\end{equation}
+其中，$\sigma_h(\cdot)$ 为隐藏层的激活函数
+
+如使用组合权重矩阵 $\bm{W}_h=\left[\bm{W}_{xh};\bm{W}_{hh}\right]$，那么公式将变为：
+\begin{equation}
+    \bm{h}^{t}=\sigma_h\left(\left[\bm{W}_{xh};\bm{W}_{hh}\right]
+    \begin{bmatrix}
+        \bm{x}^{(t)}   \\
+        \bm{h}^{(t-1)} \\
+    \end{bmatrix}+\bm{b}_h\right)
+\end{equation}
+
+在获得当前时刻隐藏层的激活值后，就可以计算输出层的激活值：
+\begin{equation}
+    \bm{o}^{(t)}=\sigma_o(\bm{W}_{ho}\bm{h}^{(t)}+\bm{b}_o)
+\end{equation}
+\figures{fig15-6}{计算单层循环神经网络隐藏层和输出层的激活值}
+\subsection{隐藏层循环与输出层循环}
+当存在输出层循环连接时，前一时刻输出层的激活值  $\bm{o}^{(t-1)}$ 可以通过以下两种方式循环：
+\begin{itemize}
+    \item 添加到当前时刻的隐藏层 $\bm{h}^{(t)}$
+    \item 添加到当前时刻的输出层 $\bm{o}^{(t)}$
+\end{itemize}
+\figures{fig15-7}{不同循环连接模型}
+\subsection{远距离学习面临的问题}
+在实践中，解决序列中远距离依赖问题常用的三种解决方案如下：
+\begin{enumerate}
+    \item 梯度剪裁
+    \item 截断时序方向传播（TBPTT）
+    \item 长短期记忆网络
+\end{enumerate}
+\figures{fig15-8}{计算损失函数梯度时出现的问题}
+梯度剪裁是指为梯度设定一个截止值或阈值，如果梯度超过该值则将梯度设为此截止值。而TBPTT限制反向传播时刻数量。
