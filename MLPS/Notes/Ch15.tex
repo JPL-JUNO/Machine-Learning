@@ -1,6 +1,15 @@
 \chapter{用循环神经网络对序列数据建模\label{Ch15}}
 \section{用于序列数据建模的循环神经网络}
+\subsection{循环神经网络的循环机制}
+相邻时刻隐藏层信息的流动时神经网络可以记住过去的信息。通常用回路来表示相邻时刻隐藏层信息的流动。在表示循环神经网络的图中，这个回路也被称为\textbf{循环边}。
 \subsection{循环神经网络激活值计算}
+单层循环神经网络所有的权重矩阵如下：
+\begin{itemize}
+    \item $\bm{W}_{xh}$: 输入层 $\bm{x}^{(t)}$ 和隐藏层 $\bm{h}$ 之间的权重矩阵
+    \item $\bm{W}_{hh}$: 与循环边相关联的权重矩阵
+    \item $\bm{W}_{ho}$: 隐藏层与输出层之间的权重矩阵
+\end{itemize}
+
 对于隐藏层，通过输入值的线性组合方式计算净输入 $\bm{z}_h$，即计算两个权重矩阵与对应输入向量的乘法的和，再加上偏置单元 $\bm{b}_h$：
 \begin{equation}
     \bm{z}_h^{(t)} = \bm{W}_{xh}\bm{x}^{(t)}+\bm{W}_{hh}\bm{h}^{(t-1)}+\bm{b}_h
@@ -40,4 +49,37 @@
     \item 长短期记忆网络
 \end{enumerate}
 \figures{fig15-8}{计算损失函数梯度时出现的问题}
-梯度剪裁是指为梯度设定一个截止值或阈值，如果梯度超过该值则将梯度设为此截止值。而TBPTT限制反向传播时刻数量。
+
+梯度剪裁是指为梯度设定一个截止值或阈值，如果梯度超过该值则将梯度设为此截止值。而 TBPTT 限制反向传播时刻数量。
+\subsection{长短期记忆网络}
+\figures{fig15-9}{长短期记忆网络单元的内部结构}
+在长短期记忆网络中，前一时刻的单元状态 $\bm{C}^{(t-1)}$ 直接参与当前时刻单元状态 $\bm{C}^{(t)}$ 的计算。记忆单元中的信息流由多个计算单元（通常称为门）控制。在 \autoref{fig15-8} 中，$\bm{x}^{(t)}$ 表示 $t$ 时刻的输入数据，$\bm{h}^{(t-1)}$ 表示 $t-1$ 时刻隐藏层输出。图中有 4 个框，每个框内给出了激活函数（sigmoid 函数 $\sigma$ 或双曲正切函数 $\tanh$、权重和偏置项。在每个框中，需要计算 $\bm{h}^{(t-1)}$ 和 $\bm{x}^{(t)}$ 向量与矩阵的乘积加上 $\bm{b}^{(t)}$，在通过激活函数得到输出值。输出的值经过运算（称为一个门）。$\bigodot$ 代表两个向量对应元素相乘，$\bigoplus$ 代表两个向量元素相加。
+
+长短期基于网络有 3 种不同类型的门，分别为遗忘门、输入门和输出门。
+
+遗忘门 $\bm{f}_t$ 可以重置单元状态，以防状态无限增长。事实上，遗忘门的任务就是决定保留哪部分信息，遗忘哪部分信息。计算公式如下：
+\begin{equation}
+    \bm{f}_t=\sigma\left(\bm{W}_{xf}\bm{x}^{(t)}+\bm{W}_{hf}\bm{h}^{(t-1)}+\bm{b}_f\right)
+\end{equation}
+
+输出门 $\bm{i}_t$ 和候选值 $\tilde{\bm{C}}_t$ 负责更新单元状态，计算公式如下：
+\begin{equation}
+    \begin{aligned}
+        \bm{i}_t         & =\sigma\left(\bm{W}_{xi}\bm{x}^{(t)}+\bm{W}_{hi}\bm{h}^{(t-1)}+\bm{b}_i\right) \\
+        \tilde{\bm{C}}_t & =\tanh\left(\bm{W}_{xc}\bm{x}^{(t)}+\bm{W}_{hc}\bm{h}^{(t-1)}+\bm{b}_c\right)  \\
+    \end{aligned}
+\end{equation}
+
+$t$ 时刻的单元状态计算如下：
+\begin{equation}
+    \bm{C}^{(t)}=\left(\bm{C}^{(t-1)}\bigodot\bm{f}_t\right)\bigoplus\left(\bm{i}_t\bigodot\tilde{\bm{C}}_t\right)
+\end{equation}
+
+输出门 $\bm{o}_t$ 决定如何更新隐藏层的值：
+\begin{equation}
+    \bm{o}_t=\sigma\left(\bm{W}_{xo}\bm{x}^{(t)}+\bm{W}_{ho}\bm{h}^{(t-1)}+\bm{b}_o\right)
+\end{equation}
+综上所述，当前时刻隐藏层的输出计算如下：
+\begin{equation}
+    \bm{h}^{(t)}=\bm{o}_t\bigodot\tanh\left(\bm{C}^{(t)}\right)
+\end{equation}

@@ -3,3 +3,6 @@ scikit-learn
 pandas
 matplotlib
 numpy
+torch
+torchvision
+torchtext
