@@ -6,12 +6,16 @@
 
 ## Status Table
 
-| Title                                          | Notes | Status    |
-| ---------------------------------------------- | ----- | --------- |
-| Machine Learning with PyTorch and Scikit-Learn | 😀     | reading 📑 |
-| Python Machine Learning By Example             | 😀     | reading 📑 |
-| Python Feature Engineering Cookbook            | 😀     | reading 📑 |
-| Machine Learning Bookcamp                      | 😀     | reading 📑 |
+| Title                               | Notes | Status    |
+| ----------------------------------- | ----- | --------- |
+| Python Machine Learning By Example  | 😀     | reading 📑 |
+| Python Feature Engineering Cookbook | 😀     | reading 📑 |
+| Machine Learning Bookcamp           | 😀     | reading 📑 |
+
+| Title                                          | Folder                                                        | Status  | Edition | Language          |
+| ---------------------------------------------- | ------------------------------------------------------------- | ------- | ------- | ----------------- |
+| Machine Learning with PyTorch and Scikit-Learn | [MLPS](https://github.com/JPL-JUNO/Python-3/tree/main/MLWTF)  | Reading | 1st     | English, 简体中文 |
+| Machine Learning with TensorFlow Cookbook      | [MLWTF](https://github.com/JPL-JUNO/Python-3/tree/main/MLWTF) | Reading | 1st     | English           |
 
 ## Covers and Links to books you maybe have interest
 
