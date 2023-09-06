@@ -7,3 +7,6 @@ torch
 torchvision
 torchtext
 portalocker
+
+tensorflow-datasets
+IProgress
