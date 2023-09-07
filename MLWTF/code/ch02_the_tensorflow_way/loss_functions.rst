@@ -1,7 +1,9 @@
-# the properties and benefits of the different loss functions
+#####
+the properties and benefits of the different loss functions
+#####
 
 .. list-table:: Loss functions
-    :widths 30 30 70 70
+    :widths: 30 30 70 70
     :header-rows: 1
 
     * - Loss function 
