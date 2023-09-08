@@ -37,6 +37,7 @@ biases = tf.Variable(tf.random.normal(shape=[1]))
 history = list()
 
 for i in range(100):
+    # 只选择一条数据来进行更新权重·
     rand_index = np.random.choice(100)
     rand_x = [x_vals[rand_index]]
     rand_y = [y_vals[rand_index]]
