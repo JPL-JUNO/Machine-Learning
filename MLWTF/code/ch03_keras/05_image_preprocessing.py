@@ -41,6 +41,6 @@ model.compile(loss="sparse_categorical_crossentropy",
               optimizer=tf.keras.optimizers.SGD(learning_rate=.01),
               metrics=["accuracy"])
 history = model.fit(it,
-                    epochs=1,
+                    epochs=10,
                     steps_per_epoch=len(X_cifar10_train) / 32,
                     validation_data=(X_cifar10_test, y_cifar10_test))
