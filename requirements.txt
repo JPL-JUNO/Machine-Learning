@@ -10,3 +10,4 @@ portalocker
 
 tensorflow-datasets
 IProgress
+pydot
